@@ -168,3 +168,55 @@ on conflict (username) do update set
   full_name = excluded.full_name,
   nickname = excluded.nickname,
   grade_tier = excluded.grade_tier;
+
+-- 8. DỮ LIỆU KHỞI TẠO CHO 3 BẢNG HOẠT ĐỘNG (KNOWLEDGE_SRS, STICKER_DIORAMA, LESSON_LOGS)
+
+-- 8.1. Nạp từ vựng khởi đầu vào Sổ Từ Vựng SRS cho 9 bé
+insert into public.knowledge_srs (student_id, item_key, english_word, grade_tier, mastery_score, correct_streak)
+select
+  p.id,
+  v.item_key,
+  v.english_word,
+  p.grade_tier,
+  v.mastery_score,
+  v.correct_streak
+from public.student_profiles p
+cross join (
+  values
+    ('apple', 'Apple', 60, 2),
+    ('cat', 'Cat', 75, 3),
+    ('sun', 'Sun', 50, 1),
+    ('star', 'Star', 80, 4),
+    ('school', 'School', 65, 2),
+    ('rainbow', 'Rainbow', 90, 5)
+) as v(item_key, english_word, mastery_score, correct_streak)
+on conflict (student_id, item_key) do nothing;
+
+-- 8.2. Nạp vị trí sticker khởi đầu vào Sa Bàn 3D
+insert into public.sticker_diorama_placements (student_id, scene_id, sticker_id, pos_x, pos_y, scale, rotation)
+select
+  p.id,
+  'ocean_palace',
+  'sticker_dragon',
+  50,
+  50,
+  1.0,
+  0
+from public.student_profiles p
+where not exists (
+  select 1 from public.sticker_diorama_placements s where s.student_id = p.id
+);
+
+-- 8.3. Nạp nhật ký bài học mở đầu (Đảo 1)
+insert into public.lesson_logs (student_id, lesson_id, game_mode, stars_earned, gems_earned, accuracy_percent)
+select
+  p.id,
+  't' || p.grade_tier || '-isl-1',
+  'discover_bubble',
+  3,
+  50,
+  100
+from public.student_profiles p
+where not exists (
+  select 1 from public.lesson_logs l where l.student_id = p.id
+);
