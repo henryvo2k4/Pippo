@@ -665,14 +665,13 @@ interface WorldMap3DProps {
   hideHtmlOverlays?: boolean;
 }
 
-// Preload toàn bộ 6 mẫu đảo 3D .GLB và Cầu Treo Dây Văng suspension_bridge.glb để hiển thị tức thì
+// Preload toàn bộ 5 mẫu đảo 3D .GLB và Cầu Treo Dây Văng suspension_bridge.glb để hiển thị tức thì
 [
   '/models/floating_island_expanse_v7.glb',
   '/models/andrews_floating_island_unity_v2.glb',
   '/models/floating_island.glb',
   '/models/floating_island_with_roots_and_rocks.glb',
   '/models/floating_island_peak.glb',
-  '/models/stylized_3d_floating_island_and_mine_house.glb',
   '/models/suspension_bridge.glb',
 ].forEach((url) => useGLTF.preload(url));
 

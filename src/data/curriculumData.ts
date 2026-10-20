@@ -781,14 +781,13 @@ const TIER_VOCAB_BANKS: Record<GradeTier, LearningItem[]> = {
   ],
 };
 
-// Danh sách 6 mẫu Hòn Đảo Bay 3D (.GLB) thực tế trong thư mục public/models để phối hợp đa dạng trên Bản Đồ
+// Danh sách 5 mẫu Hòn Đảo Bay 3D (.GLB) thực tế trong thư mục public/models để phối hợp đa dạng trên Bản Đồ
 export const WORLD_MAP_ISLAND_GLB_POOL: string[] = [
   '/models/floating_island_expanse_v7.glb',
   '/models/andrews_floating_island_unity_v2.glb',
   '/models/floating_island.glb',
   '/models/floating_island_with_roots_and_rocks.glb',
   '/models/floating_island_peak.glb',
-  '/models/stylized_3d_floating_island_and_mine_house.glb',
 ];
 
 // Danh sách Công Trình 3D (.GLB) phong phú đặt trên các đảo để mỗi đảo có diện mạo riêng biệt
@@ -913,12 +912,12 @@ function buildAll320Islands(): IslandLesson[] {
         // Phối hợp cả 6 mẫu đảo 3D .GLB người dùng đã tải về để bản đồ đa dạng, sống động
         let islandGlbUrl = WORLD_MAP_ISLAND_GLB_POOL[(islandNumber - 1) % 4];
         if (isBoss) {
-          // Các Đảo Trùm sử dụng luân phiên các mẫu đảo hùng vĩ nhất (Mine House, Peak, Floating Forest)
+          // Các Đảo Trùm sử dụng luân phiên các mẫu đảo hùng vĩ nhất (Peak, Roots & Rocks, Expanse, Floating Island)
           const bossGlbPool = [
             '/models/floating_island.glb',
             '/models/floating_island_with_roots_and_rocks.glb',
             '/models/floating_island_peak.glb',
-            '/models/stylized_3d_floating_island_and_mine_house.glb',
+            '/models/floating_island_expanse_v7.glb',
           ];
           islandGlbUrl = bossGlbPool[(zone.zoneIndex - 1) % bossGlbPool.length];
         } else if (i === 4) {
