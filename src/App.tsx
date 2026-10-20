@@ -15,6 +15,8 @@ import {
   CheckCircle2,
   Gift,
   Brain,
+  LogOut,
+  KeyRound,
 } from 'lucide-react';
 import {
   KINGDOMS,
@@ -33,6 +35,9 @@ import { StickerDioramaBook } from './components/diorama/StickerDioramaBook';
 import { Leaderboard3DPodium } from './components/leaderboard/Leaderboard3DPodium';
 import { ParentSupabaseModal } from './components/parent/ParentSupabaseModal';
 import { PersonalHomeIsland3D } from './components/homeIsland/PersonalHomeIsland3D';
+import { StudentLoginModal } from './components/auth/StudentLoginModal';
+import { WelcomeGiftModal } from './components/auth/WelcomeGiftModal';
+import { ChangePasswordModal } from './components/auth/ChangePasswordModal';
 import { sound } from './lib/sound';
 
 type MainSection = 'map' | 'arena' | 'home_island' | 'wardrobe' | 'diorama' | 'leaderboard';
@@ -40,6 +45,9 @@ type AvatarHubTab = 'world_quests' | 'vocab_srs' | 'profile_settings';
 
 export function App() {
   const {
+    currentUsername,
+    currentFullName,
+    hasClaimedWelcomeGift,
     nickname,
     gradeTier,
     avatarBase,
@@ -61,6 +69,7 @@ export function App() {
     setAvatarBase,
     recordWordPractice,
     claimDailyQuest,
+    logoutStudentAccount,
   } = useGameStore();
 
   const [activeSection, setActiveSection] = useState<MainSection>('map');
@@ -69,6 +78,7 @@ export function App() {
   const [showParentModal, setShowParentModal] = useState(false);
   const [showAvatarHubModal, setShowAvatarHubModal] = useState(false);
   const [showIslandMissionCard, setShowIslandMissionCard] = useState(false);
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
   const [mapNoticeToast, setMapNoticeToast] = useState<string | null>(null);
 
   // State cho form Đăng Ký / Chỉnh Sửa Hồ Sơ Cá Nhân & Độ Tuổi
@@ -271,6 +281,9 @@ export function App() {
   // Bất kỳ khi nào có Modal đang mở, ẩn các nhãn <Html> 3D để không bao giờ bị đè chữ lên Popup
   const isAnyModalOpen =
     !hasCompletedOnboarding ||
+    !currentUsername ||
+    !hasClaimedWelcomeGift ||
+    showChangePasswordModal ||
     showAvatarHubModal ||
     showIslandMissionCard ||
     showParentModal;
@@ -387,6 +400,18 @@ export function App() {
                 ) : (
                   <Volume2 className="w-4 h-4 text-sky-300" />
                 )}
+              </button>
+
+              {/* Nút Đổi Tài Khoản / Đăng Xuất Bé Khác */}
+              <button
+                onClick={() => {
+                  sound.playClick();
+                  logoutStudentAccount();
+                }}
+                className="p-2 rounded-2xl bg-white/15 hover:bg-rose-500/80 text-white cursor-pointer transition-colors"
+                title="Đổi Bạn Nhỏ Khác / Đăng Xuất"
+              >
+                <LogOut className="w-4 h-4 text-amber-200 hover:text-white" />
               </button>
             </div>
           </header>
@@ -668,8 +693,39 @@ export function App() {
         </div>
       )}
 
-      {/* ================= MODAL TRUNG TÂM AVATAR CỦA BÉ & ĐĂNG KÝ ĐỘ TUỔI BAN ĐẦU ================= */}
-      {(!hasCompletedOnboarding || showAvatarHubModal) && (
+      {/* ================= MODAL ĐĂNG NHẬP HỌC SINH (CHỈ ADMIN MỚI ĐƯỢC TẠO TÀI KHOẢN) ================= */}
+      {(!hasCompletedOnboarding || !currentUsername) && (
+        <StudentLoginModal
+          isOpen={true}
+          onSuccess={() => {
+            // Đăng nhập xong
+          }}
+        />
+      )}
+
+      {/* ================= HỘP QUÀ TÂN THỦ CHO BÉ ĐĂNG NHẬP LẦN ĐẦU ================= */}
+      {currentUsername && !hasClaimedWelcomeGift && (
+        <WelcomeGiftModal
+          isOpen={true}
+          onOpenWardrobe={() => {
+            setActiveSection('wardrobe');
+          }}
+          onClose={() => {
+            // Đóng hộp quà
+          }}
+        />
+      )}
+
+      {/* ================= MODAL ĐỔI MẬT KHẨU CÁ NHÂN ================= */}
+      {showChangePasswordModal && (
+        <ChangePasswordModal
+          isOpen={showChangePasswordModal}
+          onClose={() => setShowChangePasswordModal(false)}
+        />
+      )}
+
+      {/* ================= MODAL TRUNG TÂM AVATAR CỦA BÉ ================= */}
+      {hasCompletedOnboarding && currentUsername && showAvatarHubModal && (
         <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
           <div className="clay-card w-full max-w-4xl max-h-[92vh] rounded-3xl p-6 border-4 border-amber-300 shadow-2xl flex flex-col justify-between overflow-y-auto">
             {/* Tiêu đề Modal */}
@@ -680,31 +736,24 @@ export function App() {
                 </div>
                 <div>
                   <h2 className="text-2xl font-display font-extrabold text-slate-900">
-                    {!hasCompletedOnboarding
-                      ? '🎉 Chào Mừng Bé Đến Với WonderVerse 3D!'
-                      : `🎒 Trung Tâm Cá Nhân Của ${nickname}`}
+                    🎒 Trung Tâm Cá Nhân Của {nickname}
                   </h2>
                   <p className="text-xs font-bold text-slate-500">
-                    {!hasCompletedOnboarding
-                      ? 'Hãy đăng ký tên, chọn Độ Tuổi / Cấp Lớp và Nhân Vật 3D đồng hành để bắt đầu chinh phục 80 Đảo nhé!'
-                      : 'Khám phá Đảo Cá Nhân 3D, Tủ Đồ .GLB, nhận thưởng Nhiệm Vụ Hàng Ngày, ôn Sổ Từ Vựng SRS hoặc đổi Độ Tuổi'}
+                    Khám phá Đảo Cá Nhân 3D, Tủ Đồ .GLB, nhận thưởng Nhiệm Vụ Hàng Ngày, ôn Sổ Từ Vựng SRS hoặc đổi Độ Tuổi
                   </p>
                 </div>
               </div>
 
-              {hasCompletedOnboarding && (
-                <button
-                  onClick={() => setShowAvatarHubModal(false)}
-                  className="p-2 rounded-2xl bg-slate-100 hover:bg-rose-100 text-slate-700 hover:text-rose-600 cursor-pointer"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              )}
+              <button
+                onClick={() => setShowAvatarHubModal(false)}
+                className="p-2 rounded-2xl bg-slate-100 hover:bg-rose-100 text-slate-700 hover:text-rose-600 cursor-pointer"
+              >
+                <X className="w-6 h-6" />
+              </button>
             </div>
 
-            {/* Thanh chuyển Tab trong Trung Tâm Avatar (khi bé đã đăng ký xong) */}
-            {hasCompletedOnboarding && (
-              <div className="flex items-center gap-2 mt-3 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
+            {/* Thanh chuyển Tab trong Trung Tâm Avatar */}
+            <div className="flex items-center gap-2 mt-3 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
                 <button
                   onClick={() => {
                     sound.playClick();
@@ -752,10 +801,9 @@ export function App() {
                   <span>⚙️ Hồ Sơ, Độ Tuổi & Nhân Vật 3D</span>
                 </button>
               </div>
-            )}
 
             {/* ================= TAB 1: THẾ GIỚI RIÊNG & NHIỆM VỤ HÀNG NGÀY ================= */}
-            {hasCompletedOnboarding && avatarHubTab === 'world_quests' && (
+            {avatarHubTab === 'world_quests' && (
               <div className="my-4 space-y-4">
                 <div>
                   <div className="text-xs font-extrabold uppercase text-slate-500 mb-2">
@@ -914,7 +962,7 @@ export function App() {
             )}
 
             {/* ================= TAB 2: SỔ TỪ VỰNG THÔNG MINH & ÔN TẬP NHANH (SRS FLASHCARDS) ================= */}
-            {hasCompletedOnboarding && avatarHubTab === 'vocab_srs' && (
+            {avatarHubTab === 'vocab_srs' && (
               <div className="my-4 bg-slate-50 rounded-3xl p-4 border-2 border-slate-200">
                 <div className="flex items-center justify-between mb-3">
                   <div>
@@ -998,27 +1046,70 @@ export function App() {
               </div>
             )}
 
-            {/* ================= TAB 3 (HOẶC MÀN HÌNH ĐĂNG KÝ LẦN ĐẦU): HỒ SƠ, ĐỘ TUỔI & NHÂN VẬT 3D ================= */}
-            {(!hasCompletedOnboarding || avatarHubTab === 'profile_settings') && (
+            {/* ================= TAB 3: HỒ SƠ, ĐỘ TUỔI & NHÂN VẬT 3D ================= */}
+            {avatarHubTab === 'profile_settings' && (
               <div className="my-4 bg-slate-50 rounded-3xl p-4 border-2 border-slate-200 space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="font-display font-extrabold text-sm text-slate-800 flex items-center gap-2">
                     <UserCheck className="w-4 h-4 text-indigo-600" />
                     <span>Cài Đặt Thông Tin Bé, Độ Tuổi Học Tập & Nhân Vật 3D</span>
                   </div>
-                  {hasCompletedOnboarding && (
+                  <button
+                    onClick={() => {
+                      sound.playClick();
+                      setShowAvatarHubModal(false);
+                      setShowParentModal(true);
+                    }}
+                    className="px-3 py-1.5 rounded-xl bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-display font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Settings className="w-3.5 h-3.5" />
+                    <span>Góc Phụ Huynh & Kết Nối Supabase DB</span>
+                  </button>
+                </div>
+
+                {/* Thông tin tài khoản chính thức & nút đổi mật khẩu */}
+                <div className="bg-indigo-50/90 border border-indigo-200 rounded-2xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                  <div>
+                    <div className="font-display font-extrabold text-xs text-indigo-950 flex items-center gap-2">
+                      <span>Tài khoản chính thức:</span>
+                      <span className="bg-indigo-600 text-white px-2.5 py-0.5 rounded-full text-[11px] font-mono">
+                        @{currentUsername}
+                      </span>
+                      {currentFullName && (
+                        <span className="text-slate-600 font-bold">• {currentFullName}</span>
+                      )}
+                    </div>
+                    <div className="text-[11px] font-bold text-slate-500 mt-0.5">
+                      🔒 Tài khoản bảo mật • Chỉ quản trị viên mới được tạo tài khoản
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
                     <button
+                      type="button"
+                      onClick={() => {
+                        sound.playClick();
+                        setShowChangePasswordModal(true);
+                      }}
+                      className="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-display font-extrabold text-xs flex items-center gap-1.5 shadow-sm cursor-pointer"
+                    >
+                      <KeyRound className="w-3.5 h-3.5" />
+                      <span>Đổi Mật Khẩu</span>
+                    </button>
+
+                    <button
+                      type="button"
                       onClick={() => {
                         sound.playClick();
                         setShowAvatarHubModal(false);
-                        setShowParentModal(true);
+                        logoutStudentAccount();
                       }}
-                      className="px-3 py-1.5 rounded-xl bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-display font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+                      className="px-3 py-1.5 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-700 font-display font-extrabold text-xs flex items-center gap-1.5 cursor-pointer"
                     >
-                      <Settings className="w-3.5 h-3.5" />
-                      <span>Góc Phụ Huynh & Kết Nối Supabase DB</span>
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>Đổi Bé Khác</span>
                     </button>
-                  )}
+                  </div>
                 </div>
 
                 {/* 1. Nhập Biệt Danh Của Bé */}
@@ -1109,17 +1200,15 @@ export function App() {
               </div>
             )}
 
-            {/* Nút Lưu Cài Đặt & Bắt Đầu */}
+            {/* Nút Lưu Cài Đặt */}
             <div className="pt-2 flex items-center justify-end gap-3">
-              {hasCompletedOnboarding && (
-                <button
-                  onClick={() => setShowAvatarHubModal(false)}
-                  className="px-5 py-3 rounded-2xl bg-slate-200 hover:bg-slate-300 font-display font-bold text-xs text-slate-700 cursor-pointer"
-                >
-                  Đóng
-                </button>
-              )}
-              {(!hasCompletedOnboarding || avatarHubTab === 'profile_settings') && (
+              <button
+                onClick={() => setShowAvatarHubModal(false)}
+                className="px-5 py-3 rounded-2xl bg-slate-200 hover:bg-slate-300 font-display font-bold text-xs text-slate-700 cursor-pointer"
+              >
+                Đóng
+              </button>
+              {avatarHubTab === 'profile_settings' && (
                 <button
                   onClick={() => {
                     sound.playWinFanfare();
@@ -1131,11 +1220,7 @@ export function App() {
                   className="btn-toy-green text-white font-display font-extrabold px-8 py-3 rounded-2xl text-sm flex items-center gap-2 cursor-pointer shadow-xl"
                 >
                   <Sparkles className="w-4 h-4" />
-                  <span>
-                    {!hasCompletedOnboarding
-                      ? '🚀 Bắt Đầu Hành Trình 80 Đảo 3D!'
-                      : '💾 Lưu Thông Tin & Độ Tuổi'}
-                  </span>
+                  <span>💾 Lưu Thông Tin & Độ Tuổi</span>
                 </button>
               )}
             </div>

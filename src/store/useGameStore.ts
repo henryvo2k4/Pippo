@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { AvatarBaseId, GradeTier, SkinSlot, ISLAND_DECOR_CATALOG } from '../data/curriculumData';
 import { getSupabaseClient } from '../lib/supabase';
+import { PreconfiguredStudent, WELCOME_GIFT_REWARD } from '../data/studentAccounts';
 
 export interface EquippedSkin {
   hat: string;
@@ -66,6 +67,10 @@ export interface LeaderboardCompetitor {
 
 interface GameState {
   studentId: string;
+  currentUsername: string | null;
+  currentFullName: string | null;
+  hasClaimedWelcomeGift: boolean;
+  customPasswords: Record<string, string>;
   nickname: string;
   gradeTier: GradeTier;
   avatarBase: AvatarBaseId;
@@ -91,6 +96,12 @@ interface GameState {
   customGlbUrl: string | null;
   accessoryOffsets: Record<string, { y: number; z: number; scale: number }>;
   claimedDailyQuestIds: string[];
+
+  // Student Account & Auth Actions
+  loginStudentAccount: (student: PreconfiguredStudent) => Promise<void>;
+  logoutStudentAccount: () => void;
+  claimWelcomeGift: () => void;
+  changeStudentPassword: (newPass: string) => boolean;
 
   // Actions
   setCustomGlbUrl: (url: string | null) => void;
@@ -134,16 +145,20 @@ interface GameState {
 export const useGameStore = create<GameState>()(
   persist(
     (set, get) => ({
-      studentId: 'student-local-hero-01',
-      nickname: 'Bé Henry Siêu Cấp',
+      studentId: 'std_demo',
+      currentUsername: null,
+      currentFullName: null,
+      hasClaimedWelcomeGift: false,
+      customPasswords: {},
+      nickname: 'Bé Học Sinh',
       gradeTier: 1,
       avatarBase: 'bear',
       hasCompletedOnboarding: false,
-      level: 5,
-      stars: 260,
-      rainbowGems: 650,
-      streakDays: 7,
-      speakingScoreTotal: 210,
+      level: 0,
+      stars: 0,
+      rainbowGems: 0,
+      streakDays: 0,
+      speakingScoreTotal: 0,
       equippedSkin: {
         hat: 'crown_gold',
         glasses: 'none',
@@ -554,6 +569,100 @@ export const useGameStore = create<GameState>()(
 
       setScreenTimeLimit: (mins) => set({ screenTimeLimitMins: mins }),
 
+      loginStudentAccount: async (student: PreconfiguredStudent) => {
+        const supabase = getSupabaseClient();
+        let cloudProfile: any = null;
+        if (supabase) {
+          try {
+            const { data } = await supabase
+              .from('student_profiles')
+              .select('*')
+              .eq('username', student.username)
+              .maybeSingle();
+            if (data) {
+              cloudProfile = data;
+            }
+          } catch (e) {
+            console.warn('Could not query Supabase student profile:', e);
+          }
+        }
+
+        if (cloudProfile) {
+          set({
+            studentId: cloudProfile.id || student.id,
+            currentUsername: student.username,
+            currentFullName: student.fullName,
+            nickname: cloudProfile.nickname || student.nickname,
+            gradeTier: (cloudProfile.grade_tier as GradeTier) || student.gradeTier,
+            avatarBase: (cloudProfile.avatar_base as AvatarBaseId) || student.avatarBase,
+            level: typeof cloudProfile.level === 'number' ? cloudProfile.level : 0,
+            stars: typeof cloudProfile.stars === 'number' ? cloudProfile.stars : 0,
+            rainbowGems: typeof cloudProfile.rainbow_gems === 'number' ? cloudProfile.rainbow_gems : 0,
+            streakDays: typeof cloudProfile.streak_days === 'number' ? cloudProfile.streak_days : 1,
+            speakingScoreTotal: cloudProfile.speaking_score_total || 0,
+            equippedSkin: cloudProfile.equipped_skin || get().equippedSkin,
+            petState: cloudProfile.pet_state || get().petState,
+            unlockedItems: cloudProfile.unlocked_items || get().unlockedItems,
+            completedLessons: cloudProfile.completed_lessons || [],
+            unlockedDecorIds: cloudProfile.unlocked_decor_ids || get().unlockedDecorIds,
+            placedIslandDecors: cloudProfile.placed_island_decors || [],
+            homeIslandTheme: cloudProfile.home_island_theme || 'sunny',
+            hasClaimedWelcomeGift: Boolean(cloudProfile.has_claimed_welcome_gift),
+            hasCompletedOnboarding: true,
+          });
+        } else {
+          set({
+            studentId: student.id,
+            currentUsername: student.username,
+            currentFullName: student.fullName,
+            nickname: student.nickname,
+            gradeTier: student.gradeTier,
+            avatarBase: student.avatarBase,
+            level: 0,
+            stars: 0,
+            rainbowGems: 0,
+            streakDays: 1,
+            speakingScoreTotal: 0,
+            hasClaimedWelcomeGift: false,
+            completedLessons: [],
+            lessonStars: {},
+            lessonMistakes: {},
+            hasCompletedOnboarding: true,
+          });
+          get().syncToSupabaseCloud();
+        }
+      },
+
+      logoutStudentAccount: () => {
+        set({
+          currentUsername: null,
+          currentFullName: null,
+          hasCompletedOnboarding: false,
+        });
+      },
+
+      claimWelcomeGift: () => {
+        set((state) => ({
+          hasClaimedWelcomeGift: true,
+          rainbowGems: state.rainbowGems + WELCOME_GIFT_REWARD.gems,
+          stars: state.stars + WELCOME_GIFT_REWARD.stars,
+        }));
+        get().syncToSupabaseCloud();
+      },
+
+      changeStudentPassword: (newPass: string) => {
+        const username = get().currentUsername;
+        if (!username) return false;
+        set((state) => ({
+          customPasswords: {
+            ...state.customPasswords,
+            [username]: newPass,
+          },
+        }));
+        get().syncToSupabaseCloud();
+        return true;
+      },
+
       syncToSupabaseCloud: async () => {
         const supabase = getSupabaseClient();
         if (!supabase) {
@@ -563,8 +672,11 @@ export const useGameStore = create<GameState>()(
         try {
           set({ cloudSyncStatus: 'syncing' });
           const state = get();
+          const username = state.currentUsername || 'guest_' + state.studentId;
           const { error } = await supabase.from('student_profiles').upsert(
             {
+              username,
+              full_name: state.currentFullName || state.nickname,
               nickname: state.nickname,
               grade_tier: state.gradeTier,
               avatar_base: state.avatarBase,
@@ -580,12 +692,14 @@ export const useGameStore = create<GameState>()(
               unlocked_decor_ids: state.unlockedDecorIds,
               placed_island_decors: state.placedIslandDecors,
               home_island_theme: state.homeIslandTheme,
+              has_claimed_welcome_gift: state.hasClaimedWelcomeGift,
               screen_time_limit_mins: state.screenTimeLimitMins,
               updated_at: new Date().toISOString(),
             },
-            { onConflict: 'nickname' }
+            { onConflict: 'username' }
           );
           if (error) {
+            console.warn('Supabase sync warning:', error);
             set({ cloudSyncStatus: 'error' });
             return false;
           }
