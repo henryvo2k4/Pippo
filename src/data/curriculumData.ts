@@ -1,6 +1,6 @@
 export type GradeTier = 1 | 2 | 3 | 4;
 
-export type AvatarBaseId = 'bear' | 'rabbit' | 'dino' | 'cat' | 'knight' | 'wizard';
+export type AvatarBaseId = 'boy' | 'girl' | 'bear' | 'rabbit' | 'dino' | 'cat' | 'knight' | 'wizard';
 
 export interface LearningItem {
   id: string;
@@ -992,6 +992,50 @@ export interface AvatarCharacterMeta {
 
 export const AVATAR_CHARACTERS: AvatarCharacterMeta[] = [
   {
+    id: 'boy',
+    name: 'Bé Trai Dũng Cảm',
+    title: 'Hiệp Sĩ Nhí Pippo (Boy Hero)',
+    emoji: '👦',
+    primaryColor: '#3b82f6',
+    secondaryColor: '#dbeafe',
+    recommendedAge: 'Mọi lứa tuổi',
+    description: 'Cậu bé dũng cảm với mái tóc nâu lãng tử và tinh thần phiêu lưu bất tận!',
+    glbUrl: '',
+    glbScale: 1,
+    glbYOffset: 0,
+    signatureSetName: 'Bộ Hiệp Sĩ Quả Cảm',
+    signatureSkin: {
+      hat: 'hat_warrior_helmet',
+      glasses: 'none',
+      outfit: 'outfit_warrior',
+      wing: 'back_backpack',
+      hand_item: 'hand_warrior_sword',
+      aura: 'none',
+    },
+  },
+  {
+    id: 'girl',
+    name: 'Bé Gái Đáng Yêu',
+    title: 'Pháp Sư Nhí Pippo (Girl Hero)',
+    emoji: '👧',
+    primaryColor: '#ec4899',
+    secondaryColor: '#fce7f3',
+    recommendedAge: 'Mọi lứa tuổi',
+    description: 'Cô bé thông minh với mái tóc thắt bím san hô kẹo ngọt và phép thuật tiếng Anh!',
+    glbUrl: '',
+    glbScale: 1,
+    glbYOffset: 0,
+    signatureSetName: 'Bộ Phù Thủy Ma Pháp',
+    signatureSkin: {
+      hat: 'hat_mage_witch',
+      glasses: 'none',
+      outfit: 'outfit_mage',
+      wing: 'wing_angel',
+      hand_item: 'hand_mage_staff',
+      aura: 'starlight',
+    },
+  },
+  {
     id: 'bear',
     name: 'Robo Buddy',
     title: 'Robot Biểu Cảm 3D (.glb)',
@@ -1126,7 +1170,7 @@ export const AVATAR_CHARACTERS: AvatarCharacterMeta[] = [
 ];
 
 // ================= KHO TRANG PHỤC & PHỤ KIỆN 3D .GLB (WARDROBE SHOP) =================
-export type SkinSlot = 'hat' | 'glasses' | 'outfit' | 'wing' | 'hand_item' | 'aura';
+export type SkinSlot = 'hat' | 'glasses' | 'outfit' | 'shield' | 'wing' | 'hand_item' | 'aura';
 
 export interface ShopCostumeItem {
   id: string;
@@ -1135,42 +1179,145 @@ export interface ShopCostumeItem {
   vietnameseName: string;
   emoji: string;
   priceGems: number;
-  rarity: 'Common' | 'Rare' | 'Epic' | 'Legendary';
+  rarity: 'Common' | 'Rare' | 'Epic' | 'Legendary' | 'Mythic';
   color: string;
   glbPreviewUrl?: string;
+  effectDescription?: string;
 }
 
 export const SHOP_COSTUMES: ShopCostumeItem[] = [
+  // --- 1. MŨ & VƯƠNG MIỆN & NÓN (HATS) ---
   { id: 'none', slot: 'hat', name: 'No Headgear', vietnameseName: 'Đầu Mặc Định', emoji: '✨', priceGems: 0, rarity: 'Common', color: '#94a3b8' },
-  { id: 'crown_gold', slot: 'hat', name: 'Royal Crown 3D (.glb)', vietnameseName: 'Vương Miện Hoàng Gia (.glb)', emoji: '👑', priceGems: 120, rarity: 'Epic', color: '#facc15', glbPreviewUrl: '/models/Crown3D.glb' },
-  { id: 'wizard_hat', slot: 'hat', name: 'Pro Street Cap 3D (.glb)', vietnameseName: 'Mũ Nón Thể Thao 3D (.glb)', emoji: '🧢', priceGems: 150, rarity: 'Epic', color: '#3b82f6', glbPreviewUrl: '/models/WizardHat3D.glb' },
-  { id: 'astro_helmet', slot: 'hat', name: 'Sci-Fi Battle Helmet (.glb)', vietnameseName: 'Mũ Giáp Không Gian (.glb)', emoji: '👩‍🚀', priceGems: 200, rarity: 'Legendary', color: '#38bdf8', glbPreviewUrl: '/models/SciFiHelmet3D.glb' },
-  { id: 'bunny_ears', slot: 'hat', name: 'Dragon Knight Helmet (.glb)', vietnameseName: 'Mũ Trụ Hiệp Sĩ Rồng (.glb)', emoji: '🪖', priceGems: 140, rarity: 'Rare', color: '#f59e0b', glbPreviewUrl: '/models/KnightHelmet3D.glb' },
+  { id: 'hat_archer_cap', slot: 'hat', name: 'Robin Hood Feathered Cap', vietnameseName: 'Mũ Cung Thủ Lông Vũ Xanh', emoji: '🏹', priceGems: 300, rarity: 'Rare', color: '#16a34a', effectDescription: 'Lông vũ tinh linh nhẹ nhàng lay động' },
+  { id: 'hat_mage_witch', slot: 'hat', name: 'Mystic Witch Hat', vietnameseName: 'Mũ Phù Thủy Ma Pháp', emoji: '🧙‍♀️', priceGems: 450, rarity: 'Epic', color: '#9333ea', effectDescription: 'Khóa vàng ma thuật & chóp xoắn bí ẩn' },
+  { id: 'hat_warrior_helmet', slot: 'hat', name: 'Crimson Plume Knight Helmet', vietnameseName: 'Mũ Trụ Hiệp Sĩ Lông Vũ Đỏ', emoji: '🪖', priceGems: 550, rarity: 'Epic', color: '#ef4444', effectDescription: 'Lông vũ đỏ rực rỡ hiên ngang' },
+  { id: 'hat_cleric_tiara', slot: 'hat', name: 'Angelic Ruby Tiara', vietnameseName: 'Vương Miện Cánh Thánh Điện', emoji: '👑', priceGems: 700, rarity: 'Epic', color: '#f59e0b', effectDescription: 'Ngọc đỏ hoàng gia & đôi cánh vàng' },
+  { id: 'crown_gold', slot: 'hat', name: 'Royal Golden Crown', vietnameseName: 'Vương Miện Hoàng Gia', emoji: '👑', priceGems: 600, rarity: 'Epic', color: '#facc15' },
+  { id: 'wizard_hat', slot: 'hat', name: 'Arcane Mage Cap', vietnameseName: 'Mũ Nón Thể Thao Phép', emoji: '🧢', priceGems: 250, rarity: 'Rare', color: '#3b82f6' },
+  { id: 'astro_helmet', slot: 'hat', name: 'Sci-Fi Battle Helmet', vietnameseName: 'Mũ Giáp Không Gian Tương Lai', emoji: '👩‍🚀', priceGems: 950, rarity: 'Legendary', color: '#38bdf8', effectDescription: 'Kính hiển thị HUD tương lai' },
+  { id: 'bunny_ears', slot: 'hat', name: 'Dragon Knight Helm', vietnameseName: 'Mũ Trụ Chiến Binh Rồng', emoji: '🐉', priceGems: 400, rarity: 'Rare', color: '#f59e0b' },
 
+  // --- 2. KÍNH MẮT & VISOR (GLASSES) ---
   { id: 'none', slot: 'glasses', name: 'No Glasses', vietnameseName: 'Không Đeo Kính', emoji: '👀', priceGems: 0, rarity: 'Common', color: '#94a3b8' },
-  { id: 'star_shades', slot: 'glasses', name: 'Cool 3D Shades (.glb)', vietnameseName: 'Kính Mát Thời Trang (.glb)', emoji: '🕶️', priceGems: 100, rarity: 'Rare', color: '#f43f5e', glbPreviewUrl: '/models/Glasses3D.glb' },
-  { id: 'cyber_visor', slot: 'glasses', name: 'Cyber Neon Glasses (.glb)', vietnameseName: 'Kính Điện Tử Neon (.glb)', emoji: '🥽', priceGems: 180, rarity: 'Legendary', color: '#06b6d4', glbPreviewUrl: '/models/Glasses3D.glb' },
+  { id: 'star_shades', slot: 'glasses', name: 'Star shades 3D', vietnameseName: 'Kính Mát Ngôi Sao Hồng', emoji: '🕶️', priceGems: 220, rarity: 'Rare', color: '#f43f5e' },
+  { id: 'cyber_visor', slot: 'glasses', name: 'Cyber Neon Visor', vietnameseName: 'Kính Điện Tử Ma Trận Neon', emoji: '🥽', priceGems: 650, rarity: 'Epic', color: '#06b6d4', effectDescription: 'Quét dữ liệu không gian 3D' },
 
-  { id: 'none', slot: 'outfit', name: 'Original Armor', vietnameseName: 'Giáp Nguyên Bản', emoji: '👕', priceGems: 0, rarity: 'Common', color: '#94a3b8' },
-  { id: 'cape_royal', slot: 'outfit', name: 'Ruby Heart Guardian (.glb)', vietnameseName: 'Hộ Tâm Kính Hồng Ngọc (.glb)', emoji: '💖', priceGems: 140, rarity: 'Epic', color: '#ef4444', glbPreviewUrl: '/models/Heart.glb' },
-  { id: 'knight_armor', slot: 'outfit', name: 'Paladin Crystal Shield (.glb)', vietnameseName: 'Khiên Pha Lê Hộ Thể (.glb)', emoji: '💎', priceGems: 240, rarity: 'Legendary', color: '#38bdf8', glbPreviewUrl: '/models/Crystal3D.glb' },
-  { id: 'wizard_robe', slot: 'outfit', name: 'Emerald Nature Spirit (.glb)', vietnameseName: 'Linh Kiếm Lục Bảo Hộ Vệ (.glb)', emoji: '🌿', priceGems: 210, rarity: 'Epic', color: '#10b981', glbPreviewUrl: '/models/PlantSword3D.glb' },
-  { id: 'dress_fairy', slot: 'outfit', name: 'Golden Treasure Companion (.glb)', vietnameseName: 'Rương Báu Vật Hoàng Kim (.glb)', emoji: '🧰', priceGems: 160, rarity: 'Rare', color: '#f59e0b', glbPreviewUrl: '/models/TreasureChest3D.glb' },
+  // --- 3. TRANG PHỤC & GIÁP TOÀN THÂN (OUTFITS) ---
+  { id: 'none', slot: 'outfit', name: 'Default Adventurer Clothes', vietnameseName: 'Đồ Mặc Định', emoji: '👕', priceGems: 0, rarity: 'Common', color: '#94a3b8' },
+  { id: 'outfit_archer', slot: 'outfit', name: 'Elven Forest Hunter Tunic', vietnameseName: 'Áo Tunic Rừng Xanh Đai Da', emoji: '🌲', priceGems: 500, rarity: 'Rare', color: '#22c55e', effectDescription: 'Gọn gàng nhanh nhẹn giữa rừng xanh' },
+  { id: 'outfit_mage', slot: 'outfit', name: 'Mystic Violet Cape & Gown', vietnameseName: 'Áo Choàng Tím & Váy Hồng Ma Pháp', emoji: '🔮', priceGems: 800, rarity: 'Epic', color: '#a855f7', effectDescription: 'Viên ngọc ngực phát sáng bí ẩn' },
+  { id: 'outfit_warrior', slot: 'outfit', name: 'Steel Knight Cuirass & Pauldrons', vietnameseName: 'Đại Giáp Thép Chiến Binh Đai Da', emoji: '🛡️', priceGems: 950, rarity: 'Epic', color: '#64748b', effectDescription: 'Giáp thép sáng bóng chống đỡ mọi đòn đánh' },
+  { id: 'outfit_cleric', slot: 'outfit', name: 'Sacred White & Gold Clergy Robe', vietnameseName: 'Lễ Phục Thánh Điện Trắng Hoàng Kim', emoji: '✨', priceGems: 1200, rarity: 'Legendary', color: '#e2e8f0', effectDescription: 'Váy tà dài hoàng kim & ngọc thánh bảo hộ' },
+  { id: 'cape_royal', slot: 'outfit', name: 'Ruby Heart Royal Cape', vietnameseName: 'Áo Choàng Hoàng Gia Đỏ', emoji: '💖', priceGems: 450, rarity: 'Rare', color: '#ef4444' },
+  { id: 'knight_armor', slot: 'outfit', name: 'Paladin Crystal Battle Armor', vietnameseName: 'Đại Giáp Pha Lê Paladin', emoji: '💎', priceGems: 1100, rarity: 'Legendary', color: '#38bdf8' },
+  { id: 'wizard_robe', slot: 'outfit', name: 'Emerald Archmage Robe', vietnameseName: 'Pháp Y Đại Sư Lục Bảo', emoji: '🌿', priceGems: 750, rarity: 'Epic', color: '#10b981' },
+  { id: 'dress_fairy', slot: 'outfit', name: 'Sweet Candy Fairy Dress', vietnameseName: 'Váy Tinh Linh Kẹo Ngọt', emoji: '🧚', priceGems: 400, rarity: 'Rare', color: '#f472b6' },
 
+  // --- 4. KHIÊN PHÒNG THỦ (SHIELDS) ---
+  { id: 'none', slot: 'shield', name: 'No Shield', vietnameseName: 'Không Khiên', emoji: '✋', priceGems: 0, rarity: 'Common', color: '#94a3b8' },
+  { id: 'shield_warrior', slot: 'shield', name: 'Royal Heraldic Kite Shield', vietnameseName: 'Khiên Hiệp Sĩ Xanh Đính Pha Lê', emoji: '🛡️', priceGems: 500, rarity: 'Rare', color: '#2563eb', effectDescription: 'Huy hiệu hoàng gia & đá quý hộ mệnh' },
+  { id: 'shield_holy', slot: 'shield', name: 'Divine Golden Sun Shield', vietnameseName: 'Khiên Thái Dương Hoàng Kim', emoji: '☀️', priceGems: 850, rarity: 'Epic', color: '#eab308', effectDescription: 'Ánh sáng thánh xua tan bóng tối' },
+
+  // --- 5. CÁNH & TRANG BỊ ĐEO LƯNG (WINGS & BACK GEAR) ---
   { id: 'none', slot: 'wing', name: 'No Back Gear', vietnameseName: 'Không Đeo Lưng', emoji: '🍃', priceGems: 0, rarity: 'Common', color: '#94a3b8' },
-  { id: 'jetpack_3d', slot: 'wing', name: 'Turbo Space Jetpack (.glb)', vietnameseName: 'Động Cơ Tên Lửa 3D (.glb)', emoji: '🚀', priceGems: 190, rarity: 'Epic', color: '#0ea5e9', glbPreviewUrl: '/models/Jetpack3D.glb' },
-  { id: 'angel_wings', slot: 'wing', name: 'Sky Hoverboard 3D (.glb)', vietnameseName: 'Ván Bay Phản Trọng Lực (.glb)', emoji: '🛹', priceGems: 220, rarity: 'Legendary', color: '#38bdf8', glbPreviewUrl: '/models/Hoverboard3D.glb' },
-  { id: 'dragon_wings', slot: 'wing', name: 'Guardian Dragon Spirit (.glb)', vietnameseName: 'Rồng Thần Hộ Vệ Vai (.glb)', emoji: '🐉', priceGems: 280, rarity: 'Legendary', color: '#f97316', glbPreviewUrl: '/models/DragonPet3D.glb' },
+  { id: 'back_backpack', slot: 'wing', name: 'Traveler Leather Backpack', vietnameseName: 'Balo Thám Hiểm Rừng Xanh', emoji: '🎒', priceGems: 250, rarity: 'Common', color: '#78350f', effectDescription: 'Đựng đầy từ vựng tiếng Anh kỳ diệu' },
+  { id: 'back_quiver', slot: 'wing', name: 'Elven Arrow Quiver', vietnameseName: 'Bao Đựng Tên Lông Vũ Tinh Linh', emoji: '🏹', priceGems: 380, rarity: 'Rare', color: '#15803d', effectDescription: 'Mũi tên bọc lông vũ xanh biếc' },
+  { id: 'wing_angel', slot: 'wing', name: 'Luminous Seraph Wings', vietnameseName: 'Đôi Cánh Thiên Thần Ánh Sáng', emoji: '🪽', priceGems: 1400, rarity: 'Legendary', color: '#f8fafc', effectDescription: 'Đôi cánh trắng muốt viền vàng lấp lánh' },
+  { id: 'angel_wings', slot: 'wing', name: 'Pure White Wings', vietnameseName: 'Cánh Thiên Sứ Trắng', emoji: '🪽', priceGems: 950, rarity: 'Epic', color: '#ffffff' },
+  { id: 'wing_dragon', slot: 'wing', name: 'Inferno Dragon Wings', vietnameseName: 'Đôi Cánh Rồng Lửa Địa Ngục', emoji: '🔥', priceGems: 1600, rarity: 'Legendary', color: '#dc2626', effectDescription: 'Tỏa hơi nóng và tàn lửa rực đỏ' },
+  { id: 'dragon_wings', slot: 'wing', name: 'Dragon Wings', vietnameseName: 'Cánh Rồng Huyền Thoại', emoji: '🐉', priceGems: 1200, rarity: 'Legendary', color: '#ea580c' },
+  { id: 'jetpack_3d', slot: 'wing', name: 'Twin Turbine Galaxy Jetpack', vietnameseName: 'Động Cơ Tên Lửa Không Gian', emoji: '🚀', priceGems: 1100, rarity: 'Legendary', color: '#0ea5e9', effectDescription: 'Tia lửa phản lực bay vút lên bầu trời' },
 
+  // --- 6. VŨ KHÍ TAY PHẢI (WEAPONS & HAND ITEMS) ---
   { id: 'none', slot: 'hand_item', name: 'Empty Hand', vietnameseName: 'Tay Không', emoji: '✋', priceGems: 0, rarity: 'Common', color: '#94a3b8' },
-  { id: 'magic_wand', slot: 'hand_item', name: 'Starlight Magic Sword (.glb)', vietnameseName: 'Đại Đao Ánh Sao 3D (.glb)', emoji: '🗡️', priceGems: 150, rarity: 'Epic', color: '#facc15', glbPreviewUrl: '/models/MagicSword3D.glb' },
-  { id: 'laser_sword', slot: 'hand_item', name: 'Ancient Rune Blade (.glb)', vietnameseName: 'Thanh Kiếm Cổ Ngữ 3D (.glb)', emoji: '⚔️', priceGems: 250, rarity: 'Legendary', color: '#22d3ee', glbPreviewUrl: '/models/RuneSword.glb' },
-  { id: 'balloon_heart', slot: 'hand_item', name: 'Elven Hunter Bow (.glb)', vietnameseName: 'Cung Thần Rừng Xanh (.glb)', emoji: '🏹', priceGems: 135, rarity: 'Rare', color: '#fb7185', glbPreviewUrl: '/models/Bow3D.glb' },
+  { id: 'balloon_heart', slot: 'hand_item', name: 'Heart Balloons', vietnameseName: 'Chùm Bóng Bay Trái Tim', emoji: '🎈', priceGems: 150, rarity: 'Common', color: '#fb7185' },
+  { id: 'hand_archer_bow', slot: 'hand_item', name: 'Elven Recurve Bow & Arrow', vietnameseName: 'Cung Gỗ Tinh Linh & Mũi Tên', emoji: '🏹', priceGems: 480, rarity: 'Rare', color: '#15803d', effectDescription: 'Bắn trúng mọi câu hỏi tiếng Anh' },
+  { id: 'hand_warrior_sword', slot: 'hand_item', name: 'Royal Steel Broadsword', vietnameseName: 'Thanh Kiếm Thép Hoàng Gia', emoji: '🗡️', priceGems: 600, rarity: 'Rare', color: '#475569', effectDescription: 'Lưỡi kiếm sáng lóa & đốc kiếm bọc vàng' },
+  { id: 'hand_mage_staff', slot: 'hand_item', name: 'Spiral Wood Magic Staff', vietnameseName: 'Gậy Phép Xoắn Ốc Ngọc Tím', emoji: '🪄', priceGems: 850, rarity: 'Epic', color: '#9333ea', effectDescription: 'Viên ngọc tím lơ lửng xoay vần ma lực' },
+  { id: 'hand_cleric_scepter', slot: 'hand_item', name: 'Winged Divine Scepter', vietnameseName: 'Vương Trượng Thánh Cánh Vàng', emoji: '🔱', priceGems: 1250, rarity: 'Legendary', color: '#f59e0b', effectDescription: 'Cánh vàng xòe rộng & ngọc thánh xanh ngọc' },
+  { id: 'magic_wand', slot: 'hand_item', name: 'Starlight Crystal Wand', vietnameseName: 'Đũa Phép Ngôi Sao Pha Lê', emoji: '⭐', priceGems: 420, rarity: 'Rare', color: '#facc15' },
+  { id: 'laser_sword', slot: 'hand_item', name: 'Cyber Laser Katana', vietnameseName: 'Thanh Kiếm Ánh Sáng Cyber', emoji: '⚔️', priceGems: 1350, rarity: 'Legendary', color: '#06b6d4', effectDescription: 'Lưỡi kiếm năng lượng plasma rực cháy' },
 
-  { id: 'none', slot: 'aura', name: 'No Magic Ring', vietnameseName: 'Không Vòng Phép', emoji: '⭕', priceGems: 0, rarity: 'Common', color: '#94a3b8' },
-  { id: 'starlight', slot: 'aura', name: 'Solar Gold Magic Ring (.glb)', vietnameseName: 'Vòng Phép Hoàng Kim (.glb)', emoji: '🌟', priceGems: 160, rarity: 'Epic', color: '#facc15', glbPreviewUrl: '/models/OrangeMagicRing.glb' },
-  { id: 'rainbow_ring', slot: 'aura', name: 'Crimson Flame Magic Ring (.glb)', vietnameseName: 'Vòng Phép Hồng Ngọc (.glb)', emoji: '🔥', priceGems: 260, rarity: 'Legendary', color: '#ec4899', glbPreviewUrl: '/models/RedMagicRing.glb' },
-  { id: 'cyber_pulse', slot: 'aura', name: 'Emerald Cyber Ring (.glb)', vietnameseName: 'Vòng Ma Trận Lục Bảo (.glb)', emoji: '⚡', priceGems: 200, rarity: 'Epic', color: '#10b981', glbPreviewUrl: '/models/GreenMagicRing.glb' },
+  // --- 7. HIỆU ỨNG HÀO QUANG AURA (AURA VFX) ---
+  { id: 'none', slot: 'aura', name: 'No Aura', vietnameseName: 'Không Vòng Phép', emoji: '⭕', priceGems: 0, rarity: 'Common', color: '#94a3b8' },
+  { id: 'starlight', slot: 'aura', name: 'Starlight Glitter Field', vietnameseName: 'Hào Quang Bụi Sao Hoàng Kim', emoji: '🌟', priceGems: 750, rarity: 'Epic', color: '#facc15', effectDescription: 'Các đốm sao vàng lấp lánh bay quanh người' },
+  { id: 'cyber_pulse', slot: 'aura', name: 'Cyber Matrix Wave', vietnameseName: 'Sóng Ma Trận Tương Lai', emoji: '⚡', priceGems: 1100, rarity: 'Legendary', color: '#06b6d4', effectDescription: 'Xung điện kỹ thuật số xoay vòng 3D' },
+  { id: 'rainbow_ring', slot: 'aura', name: 'Mythic Rainbow Stardust Ring', vietnameseName: 'Vòng Phép Cầu Vồng Thần Thoại', emoji: '🌈', priceGems: 2200, rarity: 'Mythic', color: '#ec4899', effectDescription: 'Bão hạt sao cầu vồng xoay 360 độ cực đại' },
+];
+
+// ================= DANH MỤC THÚ CƯNG 3D ĐI DƯỚI CHÂN (GROUND PET SHOP) =================
+export interface PetShopItem {
+  id: string;
+  name: string;
+  vietnameseName: string;
+  emoji: string;
+  priceGems: number;
+  rarity: 'Common' | 'Rare' | 'Epic' | 'Legendary' | 'Mythic';
+  color: string;
+  description: string;
+}
+
+export const PET_SHOP_CATALOG: PetShopItem[] = [
+  {
+    id: 'pet_bunny',
+    name: 'Fluffy White Bunny',
+    vietnameseName: 'Thỏ Trắng Bông Gòn',
+    emoji: '🐰',
+    priceGems: 380,
+    rarity: 'Rare',
+    color: '#f472b6',
+    description: 'Thỏ con tai dài đáng yêu, ôm củ cà rốt mini bên mình chạy lon ton!',
+  },
+  {
+    id: 'pet_cat',
+    name: 'Sweet Persian Kitten',
+    vietnameseName: 'Mèo Ba Tư Kẹo Ngọt',
+    emoji: '🐱',
+    priceGems: 480,
+    rarity: 'Rare',
+    color: '#ec4899',
+    description: 'Mèo con lông trắng muốt với chuông vàng leng keng ở cổ vui nhộn!',
+  },
+  {
+    id: 'pet_corgi',
+    name: 'Playful Corgi Puppy',
+    vietnameseName: 'Cún Corgi Tinh Nghịch',
+    emoji: '🐶',
+    priceGems: 550,
+    rarity: 'Rare',
+    color: '#f59e0b',
+    description: 'Chú cún tai to lông vàng, luôn chạy lon ton trung thành bên chân bé!',
+  },
+  {
+    id: 'pet_penguin',
+    name: 'Mini Emperor Penguin',
+    vietnameseName: 'Cánh Cụt Hoàng Đế Mini',
+    emoji: '🐧',
+    priceGems: 700,
+    rarity: 'Epic',
+    color: '#0ea5e9',
+    description: 'Bé cánh cụt quàng khăn ấm, lắc lư từng bước đi siêu ngộ nghĩnh dưới chân!',
+  },
+  {
+    id: 'pet_fox',
+    name: 'Mystic Fennec Fox',
+    vietnameseName: 'Cáo Lửa Thần Rừng',
+    emoji: '🦊',
+    priceGems: 850,
+    rarity: 'Epic',
+    color: '#ea580c',
+    description: 'Chú cáo tai to với chiếc đuôi xù cam đỏ bồng bềnh thần kỳ mang lại may mắn!',
+  },
+  {
+    id: 'pet_dragon',
+    name: 'Baby Fire Dragon',
+    vietnameseName: 'Rồng Con Lửa Đỏ',
+    emoji: '🐉',
+    priceGems: 1200,
+    rarity: 'Legendary',
+    color: '#ef4444',
+    description: 'Bé rồng lon ton dưới chân, biết vẫy cánh và ngúng nguẩy đuôi bảo vệ bé!',
+  },
 ];
 
 export interface StickerCatalogItem {

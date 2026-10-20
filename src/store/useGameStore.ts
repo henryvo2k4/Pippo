@@ -11,10 +11,11 @@ export interface EquippedSkin {
   wing: string;
   hand_item: string;
   aura: string;
+  shield?: string;
 }
 
 export interface PetState {
-  pet_id: 'dragon_sky' | 'cloud_pet' | 'robo_pup';
+  pet_id: string; // 'dragon_sky' | 'pet_dragon' | 'pet_cat' | 'pet_corgi' | 'pet_bunny' | 'pet_penguin' | 'pet_fox' | 'cloud_pet' | 'robo_pup'
   name: string;
   stage: 1 | 2 | 3; // 1: Trứng Thần, 2: Thú Con, 3: Thú Thần Tiến Hóa
   exp: number;
@@ -114,7 +115,7 @@ interface GameState {
   equipSkinItem: (slot: SkinSlot, itemId: string) => void;
   buyOrUnlockItem: (itemId: string, priceGems: number) => boolean;
   feedAndTrainPet: (gemsCost: number) => void;
-  changePetType: (petId: 'dragon_sky' | 'cloud_pet' | 'robo_pup', petName: string) => void;
+  changePetType: (petId: string, petName: string) => void;
   rewardLessonCompletion: (
     lessonId: string,
     starRating: 1 | 2 | 3,
@@ -152,7 +153,7 @@ export const useGameStore = create<GameState>()(
       customPasswords: {},
       nickname: 'Bé Học Sinh',
       gradeTier: 1,
-      avatarBase: 'bear',
+      avatarBase: 'boy',
       hasCompletedOnboarding: false,
       level: 0,
       stars: 0,
@@ -160,38 +161,62 @@ export const useGameStore = create<GameState>()(
       streakDays: 0,
       speakingScoreTotal: 0,
       equippedSkin: {
-        hat: 'crown_gold',
+        hat: 'hat_warrior_helmet',
         glasses: 'none',
-        outfit: 'knight_armor',
-        wing: 'jetpack_3d',
-        hand_item: 'laser_sword',
-        aura: 'cyber_pulse',
+        outfit: 'outfit_warrior',
+        wing: 'back_backpack',
+        hand_item: 'hand_warrior_sword',
+        shield: 'shield_warrior',
+        aura: 'none',
       },
       petState: {
-        pet_id: 'dragon_sky',
-        name: 'Poko Rồng Con',
+        pet_id: 'pet_dragon',
+        name: 'Poko Rồng Lửa',
         stage: 2,
         exp: 60,
         happiness: 95,
       },
       unlockedItems: [
         'none',
+        'hat_archer_cap',
+        'hat_warrior_helmet',
+        'hat_mage_witch',
+        'hat_cleric_tiara',
         'crown_gold',
         'bunny_ears',
         'astro_helmet',
         'star_shades',
+        'outfit_archer',
+        'outfit_warrior',
+        'outfit_mage',
+        'outfit_cleric',
         'cape_royal',
         'knight_armor',
         'wizard_robe',
+        'shield_warrior',
+        'shield_holy',
+        'back_backpack',
+        'back_quiver',
+        'wing_angel',
         'angel_wings',
         'jetpack_3d',
         'dragon_wings',
+        'hand_archer_bow',
+        'hand_warrior_sword',
+        'hand_mage_staff',
+        'hand_cleric_scepter',
         'magic_wand',
         'laser_sword',
         'balloon_heart',
         'starlight',
         'rainbow_ring',
         'cyber_pulse',
+        'pet_dragon',
+        'pet_cat',
+        'pet_corgi',
+        'pet_bunny',
+        'pet_penguin',
+        'pet_fox',
         'sticker_cow',
         'sticker_duck',
         'sticker_rabbit',
@@ -261,6 +286,8 @@ export const useGameStore = create<GameState>()(
 
       equipCharacterSignatureSet: (base) => {
         const signatureMap: Record<AvatarBaseId, EquippedSkin> = {
+          boy: { hat: 'hat_warrior_helmet', glasses: 'none', outfit: 'outfit_warrior', wing: 'back_backpack', hand_item: 'hand_warrior_sword', shield: 'shield_warrior', aura: 'none' },
+          girl: { hat: 'hat_mage_witch', glasses: 'none', outfit: 'outfit_mage', wing: 'wing_angel', hand_item: 'hand_mage_staff', aura: 'starlight' },
           bear: { hat: 'crown_gold', glasses: 'none', outfit: 'knight_armor', wing: 'jetpack_3d', hand_item: 'laser_sword', aura: 'cyber_pulse' },
           rabbit: { hat: 'crown_gold', glasses: 'none', outfit: 'wizard_robe', wing: 'angel_wings', hand_item: 'balloon_heart', aura: 'starlight' },
           dino: { hat: 'crown_gold', glasses: 'star_shades', outfit: 'knight_armor', wing: 'dragon_wings', hand_item: 'magic_wand', aura: 'rainbow_ring' },

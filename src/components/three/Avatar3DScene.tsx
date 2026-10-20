@@ -13,6 +13,7 @@ import {
   FluffyTree3D,
   FluffyCloud3D,
 } from './Sculpted3DModels';
+import { ChibiModularCharacter3D } from './ChibiModularCharacter3D';
 
 // ============================================================================
 // COMPONENT TẢI & CHUẨN HÓA KÍCH THƯỚC MÔ HÌNH 3D (.GLB) CÓ HOẠT ẢNH XƯƠNG
@@ -171,6 +172,36 @@ interface CharacterSocketConfig {
 }
 
 export const CHARACTER_SOCKET_MAP: Record<AvatarBaseId, CharacterSocketConfig> = {
+  // 0. Bé Trai Dũng Cảm (Boy Hero Chibi Modular)
+  boy: {
+    charTargetSize: 1.85,
+    hatPos: [0, 1.25, 0],
+    hatScale: 0.55,
+    glassesPos: [0, 0.92, 0.42],
+    glassesScale: 0.48,
+    backPos: [0, 0.45, -0.32],
+    backRot: [0, Math.PI, 0],
+    backScale: 0.65,
+    handPos: [0.48, 0.35, 0.18],
+    handRot: [0.25, 0, -0.2],
+    handScale: 1.0,
+    outfitPos: [-0.55, 0.75, 0.18],
+  },
+  // 0. Bé Gái Đáng Yêu (Girl Hero Chibi Modular)
+  girl: {
+    charTargetSize: 1.85,
+    hatPos: [0, 1.25, 0],
+    hatScale: 0.55,
+    glassesPos: [0, 0.92, 0.42],
+    glassesScale: 0.48,
+    backPos: [0, 0.45, -0.32],
+    backRot: [0, Math.PI, 0],
+    backScale: 0.65,
+    handPos: [0.48, 0.35, 0.18],
+    handRot: [0.25, 0, -0.2],
+    handScale: 1.0,
+    outfitPos: [-0.55, 0.75, 0.18],
+  },
   // 1. Robo Buddy (/models/RobotExpressive.glb)
   bear: {
     charTargetSize: 1.88,
@@ -365,6 +396,33 @@ export const Character3DModel: React.FC<Character3DProps> = ({
     socket.handPos[1] + userOffset.y * 0.5,
     socket.handPos[2],
   ];
+
+  const isGirl =
+    avatarBase === 'girl' ||
+    avatarBase === 'rabbit' ||
+    avatarBase === 'cat' ||
+    avatarBase === 'wizard';
+  const gender: 'boy' | 'girl' = isGirl ? 'girl' : 'boy';
+
+  // ==========================================================================
+  // HỆ THỐNG NHÂN VẬT MODULAR 3D PIPPO CHUẨN FORM CHIBI TỪ BẢN VẼ 2D
+  // TỰ ĐỘNG KHỚP 100% CÁC BỘ TRANG PHỤC (MAGE, CLERIC, WARRIOR, ARCHER, THÚ CƯNG)
+  // ==========================================================================
+  if (!customGlbUrl) {
+    return (
+      <group ref={groupRef} position={position} scale={scale} onClick={handleClick}>
+        <ChibiModularCharacter3D
+          gender={gender}
+          equippedSkin={equippedSkin}
+          petId={petState?.pet_id}
+          isJumping={isJumping || clickedBounce > 0}
+          showPet={showPet}
+          scale={1.2}
+          position={[0, 0.12, 0]}
+        />
+      </group>
+    );
+  }
 
   return (
     <group ref={groupRef} position={position} scale={scale} onClick={handleClick}>
