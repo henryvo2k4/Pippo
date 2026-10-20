@@ -153,7 +153,7 @@ export const useGameStore = create<GameState>()(
       customPasswords: {},
       nickname: 'Bé Học Sinh',
       gradeTier: 1,
-      avatarBase: 'boy',
+      avatarBase: 'phuthuy',
       hasCompletedOnboarding: false,
       level: 0,
       stars: 0,
@@ -161,12 +161,12 @@ export const useGameStore = create<GameState>()(
       streakDays: 0,
       speakingScoreTotal: 0,
       equippedSkin: {
-        hat: 'hat_warrior_helmet',
+        hat: 'none',
         glasses: 'none',
-        outfit: 'outfit_warrior',
-        wing: 'back_backpack',
-        hand_item: 'hand_warrior_sword',
-        shield: 'shield_warrior',
+        outfit: 'none',
+        wing: 'none',
+        hand_item: 'none',
+        shield: 'none',
         aura: 'none',
       },
       petState: {
@@ -286,6 +286,7 @@ export const useGameStore = create<GameState>()(
 
       equipCharacterSignatureSet: (base) => {
         const signatureMap: Record<AvatarBaseId, EquippedSkin> = {
+          phuthuy: { hat: 'none', glasses: 'none', outfit: 'none', wing: 'none', hand_item: 'none', shield: 'none', aura: 'none' },
           boy: { hat: 'hat_warrior_helmet', glasses: 'none', outfit: 'outfit_warrior', wing: 'back_backpack', hand_item: 'hand_warrior_sword', shield: 'shield_warrior', aura: 'none' },
           girl: { hat: 'hat_mage_witch', glasses: 'none', outfit: 'outfit_mage', wing: 'wing_angel', hand_item: 'hand_mage_staff', aura: 'starlight' },
           bear: { hat: 'crown_gold', glasses: 'none', outfit: 'knight_armor', wing: 'jetpack_3d', hand_item: 'laser_sword', aura: 'cyber_pulse' },

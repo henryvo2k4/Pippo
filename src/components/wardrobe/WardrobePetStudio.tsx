@@ -256,12 +256,12 @@ export const WardrobePetStudio: React.FC = () => {
         {/* Header trên sàn diễn 3D */}
         <div className="flex items-center justify-between z-10">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider bg-pink-500 text-white px-2.5 py-0.5 rounded-full shadow">
-              ✨ Studio Nhân Vật Chibi 3D
+            <span className="text-[11px] font-bold uppercase tracking-wider bg-purple-600 text-white px-3 py-0.5 rounded-full shadow font-display">
+              ✨ Nhân Vật 3D Mặc Định (.glb)
             </span>
-            <h2 className="text-lg font-display font-extrabold text-white mt-1 flex items-center gap-1.5">
-              <span>{isGirl ? '👧' : '👦'}</span>
-              <span>{isGirl ? 'Bé Gái Đáng Yêu' : 'Bé Trai Dũng Cảm'}</span>
+            <h2 className="text-lg font-display font-extrabold text-white mt-1 flex items-center gap-2">
+              <span className="text-2xl">🧙‍♀️</span>
+              <span>Bé Phù Thủy Pippo (PhuThuy.glb)</span>
             </h2>
           </div>
           <div className="bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 font-display font-extrabold px-3 py-1 rounded-2xl text-sm shadow-lg flex items-center gap-1">
@@ -270,63 +270,25 @@ export const WardrobePetStudio: React.FC = () => {
           </div>
         </div>
 
-        {/* Nút Chuyển Đổi Nhanh Giới Tính: Bé Trai / Bé Gái */}
-        <div className="z-10 mt-2 grid grid-cols-2 gap-2 bg-white/10 p-1.5 rounded-2xl backdrop-blur-md border border-white/15">
-          <button
-            onClick={() => {
-              sound.playClick();
-              setAvatarBase('boy');
-              sound.speakEnglish('Hero Boy!');
-              triggerJump('Đã chuyển sang Bé Trai Dũng Cảm!');
-            }}
-            className={`py-1.5 px-3 rounded-xl font-display font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-              !isGirl
-                ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md scale-102'
-                : 'text-slate-300 hover:text-white hover:bg-white/10'
-            }`}
-          >
-            <span className="text-base">👦</span>
-            <span>Bé Trai (Boy)</span>
-          </button>
-          <button
-            onClick={() => {
-              sound.playClick();
-              setAvatarBase('girl');
-              sound.speakEnglish('Hero Girl!');
-              triggerJump('Đã chuyển sang Bé Gái Đáng Yêu!');
-            }}
-            className={`py-1.5 px-3 rounded-xl font-display font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-              isGirl
-                ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-md scale-102'
-                : 'text-slate-300 hover:text-white hover:bg-white/10'
-            }`}
-          >
-            <span className="text-base">👧</span>
-            <span>Bé Gái (Girl)</span>
-          </button>
-        </div>
-
-        {/* 4 Nút Mặc Ngay Bộ 4 Class Khớp 100% Bản Vẽ 2D */}
-        <div className="z-10 mt-2 bg-black/40 backdrop-blur-md p-2 rounded-2xl border border-white/15">
-          <div className="text-[10px] font-bold text-amber-300 mb-1 px-1 flex items-center justify-between">
-            <span>🎨 4 Bộ Chuẩn Bản Vẽ 2D (Khớp 100%):</span>
-            <span className="text-[9px] text-slate-300 font-normal">Click để mặc trọn bộ</span>
+        {/* Thông báo trạng thái mô hình */}
+        <div className="z-10 mt-2 bg-purple-900/60 backdrop-blur-md p-2.5 rounded-2xl border border-purple-400/30 text-xs text-purple-200">
+          <div className="flex items-center justify-between">
+            <span className="font-bold text-amber-300">🔮 Mô Hình Gốc: PhuThuy.glb</span>
+            <button
+              onClick={() => {
+                sound.playPop();
+                setAvatarBase('phuthuy');
+                equipCharacterSignatureSet('phuthuy');
+                triggerJump('Đã đặt lại trang phục phù thủy mặc định!');
+              }}
+              className="px-2 py-0.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-display font-extrabold text-[10px] rounded-lg cursor-pointer"
+            >
+              🔄 Mặc Định Gốc
+            </button>
           </div>
-          <div className="grid grid-cols-4 gap-1.5">
-            {CLASS_PRESETS.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => handleEquipClassPreset(p)}
-                className="bg-white/10 hover:bg-white/20 active:scale-95 text-white p-1.5 rounded-xl flex flex-col items-center transition-all cursor-pointer border border-white/10 shadow-sm"
-                title={`Mặc trọn bộ ${p.name}`}
-              >
-                <span className="text-lg">{p.emoji}</span>
-                <span className="text-[10px] font-bold mt-0.5 leading-tight text-center truncate max-w-full">
-                  {p.name.split(' ')[0]}
-                </span>
-              </button>
-            ))}
-          </div>
+          <p className="text-[10px] text-purple-300/90 mt-1 leading-tight">
+            Đã tô màu Anime Chibi kẹo ngọt (Nón tím, tóc hồng, má phấn, váy phép thuật). Các vị trí socket phụ kiện sẵn sàng để bạn thêm file .glb sau!
+          </p>
         </div>
 
         {statusMessage && (

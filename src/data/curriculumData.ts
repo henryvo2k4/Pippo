@@ -1,6 +1,6 @@
 export type GradeTier = 1 | 2 | 3 | 4;
 
-export type AvatarBaseId = 'boy' | 'girl' | 'bear' | 'rabbit' | 'dino' | 'cat' | 'knight' | 'wizard';
+export type AvatarBaseId = 'phuthuy' | 'boy' | 'girl' | 'bear' | 'rabbit' | 'dino' | 'cat' | 'knight' | 'wizard';
 
 export interface LearningItem {
   id: string;
@@ -991,6 +991,28 @@ export interface AvatarCharacterMeta {
 }
 
 export const AVATAR_CHARACTERS: AvatarCharacterMeta[] = [
+  {
+    id: 'phuthuy',
+    name: 'Bé Phù Thủy Pippo',
+    title: 'Phù Thủy Nhí Đáng Yêu (Cute Anime Witch)',
+    emoji: '🧙‍♀️',
+    primaryColor: '#8b5cf6',
+    secondaryColor: '#ede9fe',
+    recommendedAge: 'Mọi lứa tuổi',
+    description: 'Cô bé phù thủy nhỏ với chiếc mũ ma thuật huyền bí và phép thuật tiếng Anh nhiệm màu!',
+    glbUrl: '/models/PhuThuy.glb',
+    glbScale: 1.0,
+    glbYOffset: 0,
+    signatureSetName: 'Bộ Phù Thủy Ma Pháp',
+    signatureSkin: {
+      hat: 'none',
+      glasses: 'none',
+      outfit: 'none',
+      wing: 'none',
+      hand_item: 'none',
+      aura: 'none',
+    },
+  },
   {
     id: 'boy',
     name: 'Bé Trai Dũng Cảm',
