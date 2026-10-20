@@ -29,6 +29,7 @@ import {
 } from './data/curriculumData';
 import { useGameStore } from './store/useGameStore';
 import { KingdomWorldMap3D } from './components/three/Avatar3DScene';
+import { ThreeErrorBoundary } from './components/three/ThreeErrorBoundary';
 import { MiniGameArena } from './components/games/MiniGameArena';
 import { WardrobePetStudio } from './components/wardrobe/WardrobePetStudio';
 import { StickerDioramaBook } from './components/diorama/StickerDioramaBook';
@@ -310,19 +311,21 @@ export function App() {
         <div className="w-full h-full relative overflow-hidden">
           {/* Không gian 3D trải dài toàn bộ 80 Hòn Đảo */}
           <div className="absolute inset-0 w-full h-full">
-            <KingdomWorldMap3D
-              islands={allTierIslands}
-              completedLessons={completedLessons}
-              lessonStars={lessonStars}
-              selectedIslandId={selectedIsland.id}
-              onSelectIsland={handleSelectIslandOn3DMap}
-              avatarBase={avatarBase}
-              equippedSkin={equippedSkin}
-              petState={petState}
-              cameraTargetX={cameraTargetX}
-              onCameraTargetXChange={(newX) => setCameraTargetX(newX)}
-              hideHtmlOverlays={isAnyModalOpen}
-            />
+            <ThreeErrorBoundary>
+              <KingdomWorldMap3D
+                islands={allTierIslands}
+                completedLessons={completedLessons}
+                lessonStars={lessonStars}
+                selectedIslandId={selectedIsland.id}
+                onSelectIsland={handleSelectIslandOn3DMap}
+                avatarBase={avatarBase}
+                equippedSkin={equippedSkin}
+                petState={petState}
+                cameraTargetX={cameraTargetX}
+                onCameraTargetXChange={(newX) => setCameraTargetX(newX)}
+                hideHtmlOverlays={isAnyModalOpen}
+              />
+            </ThreeErrorBoundary>
           </div>
 
           {/* THANH HUD NỔI PHÍA TRÊN: CỰC KỲ TINH GỌN (TRÁI: AVATAR HUB • PHẢI: ĐIỂM SỐ & ÂM THANH) */}

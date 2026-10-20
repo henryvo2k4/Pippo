@@ -15,6 +15,7 @@ import {
 } from './Sculpted3DModels';
 import { ChibiModularCharacter3D } from './ChibiModularCharacter3D';
 import { PhuThuyCharacter3D } from './PhuThuyCharacter3D';
+import { ThreeErrorBoundary } from './ThreeErrorBoundary';
 
 // ============================================================================
 // COMPONENT TẢI & CHUẨN HÓA KÍCH THƯỚC MÔ HÌNH 3D (.GLB) CÓ HOẠT ẢNH XƯƠNG
@@ -427,15 +428,19 @@ export const Character3DModel: React.FC<Character3DProps> = ({
   if (!customGlbUrl) {
     return (
       <group ref={groupRef} position={position} scale={scale} onClick={handleClick}>
-        <PhuThuyCharacter3D
-          scale={1.12}
-          position={[0, 0.38, 0]}
-          isJumping={isJumping || clickedBounce > 0}
-          onClickCharacter={handleClick}
-          equippedSkin={equippedSkin}
-          petId={petState?.pet_id}
-          showPet={showPet}
-        />
+        <ThreeErrorBoundary>
+          <Suspense fallback={null}>
+            <PhuThuyCharacter3D
+              scale={1.12}
+              position={[0, 0.38, 0]}
+              isJumping={isJumping || clickedBounce > 0}
+              onClickCharacter={handleClick}
+              equippedSkin={equippedSkin}
+              petId={petState?.pet_id}
+              showPet={showPet}
+            />
+          </Suspense>
+        </ThreeErrorBoundary>
       </group>
     );
   }
@@ -684,17 +689,21 @@ export const AvatarStudioCanvas: React.FC<{
         <pointLight position={[3, 2, -3]} intensity={0.85} color="#38bdf8" />
         <Sparkles count={38} scale={4.2} size={3} speed={0.4} color="#fde047" />
 
-        <Float speed={1.8} rotationIntensity={0.05} floatIntensity={0.12}>
-          <Character3DModel
-            avatarBase={avatarBase}
-            equippedSkin={equippedSkin}
-            petState={petState}
-            position={[0, -0.62, 0]}
-            scale={1.05}
-            isJumping={isJumping}
-            onClickCharacter={onClickCharacter}
-          />
-        </Float>
+        <ThreeErrorBoundary>
+          <Suspense fallback={null}>
+            <Float speed={1.8} rotationIntensity={0.05} floatIntensity={0.12}>
+              <Character3DModel
+                avatarBase={avatarBase}
+                equippedSkin={equippedSkin}
+                petState={petState}
+                position={[0, -0.62, 0]}
+                scale={1.05}
+                isJumping={isJumping}
+                onClickCharacter={onClickCharacter}
+              />
+            </Float>
+          </Suspense>
+        </ThreeErrorBoundary>
 
         {/* Bục Sân Khấu 3D Đa Tầng Phát Sáng */}
         <group position={[0, -0.92, 0]}>
@@ -1217,16 +1226,20 @@ export const KingdomWorldMap3D: React.FC<WorldMap3DProps> = ({
 
         {/* Nhân vật 3D .GLB của bé đứng trên Đảo đang chọn */}
         {activeIsland && Math.abs(activeIsland.position3D[0] - currentCamX) < 38 && (
-          <Character3DModel
-            avatarBase={avatarBase}
-            equippedSkin={equippedSkin}
-            petState={petState}
-            position={charPos}
-            scale={0.65}
-            onClickCharacter={() =>
-              sound.speakEnglish(`Island ${activeIsland.islandNumber}: ${activeIsland.title}!`)
-            }
-          />
+          <ThreeErrorBoundary>
+            <Suspense fallback={null}>
+              <Character3DModel
+                avatarBase={avatarBase}
+                equippedSkin={equippedSkin}
+                petState={petState}
+                position={charPos}
+                scale={0.65}
+                onClickCharacter={() =>
+                  sound.speakEnglish(`Island ${activeIsland.islandNumber}: ${activeIsland.title}!`)
+                }
+              />
+            </Suspense>
+          </ThreeErrorBoundary>
         )}
       </Canvas>
     </div>
