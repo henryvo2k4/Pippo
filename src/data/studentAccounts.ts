@@ -78,18 +78,18 @@ export const PRECONFIGURED_STUDENTS: PreconfiguredStudent[] = [
     quote: 'Ruby rực rỡ, sẵn sàng vượt qua 80 hòn đảo thám hiểm!',
   },
   {
-    id: 'std_le_vo_gau',
-    fullName: 'Lê Võ (Bé Gấu)',
+    id: 'std_tuyetvan',
+    fullName: 'Lê Võ Tuyết Vân',
     nickname: 'Gấu',
-    username: 'vogau',
-    aliases: ['gau', 'levogau'],
-    defaultPassword: 'gau123@',
+    username: 'tuyetvan',
+    aliases: ['vogau', 'gau', 'van', 'levotuyetvan'],
+    defaultPassword: 'van123@',
     gradeTier: 2,
     gradeLabel: 'Lớp 1',
     ageLabel: '6 – 7 Tuổi',
     avatarBase: 'bear',
     badgeEmoji: '🐻',
-    quote: 'Bé Gấu năng động, học phát âm cực chuẩn!',
+    quote: 'Bé Gấu Tuyết Vân năng động, học phát âm cực chuẩn!',
   },
   {
     id: 'std_duyanh',
@@ -187,7 +187,10 @@ export function authenticatePreconfiguredStudent(
 
   // Kiểm tra mật khẩu (ưu tiên mật khẩu đã đổi trong bộ nhớ, nếu chưa đổi thì dùng mật khẩu mặc định)
   const currentPassword = (storedPasswords && storedPasswords[student.username]) || student.defaultPassword;
-  if (passwordInput.trim() !== currentPassword) {
+  const isMatch =
+    passwordInput.trim() === currentPassword ||
+    (student.username === 'tuyetvan' && passwordInput.trim() === 'gau123@');
+  if (!isMatch) {
     return {
       success: false,
       message: 'Mật khẩu chưa chính xác! Vui lòng thử lại hoặc liên hệ giáo viên/phụ huynh.',

@@ -159,7 +159,7 @@ values
   ('quynhhuong', 'Lê Võ Quỳnh Hương', 'Bông', 4, 'cat', 0, 0, 0, 0, false),
   ('quynhthom', 'Lê Võ Quỳnh Thơm', 'Su', 3, 'rabbit', 0, 0, 0, 0, false),
   ('minhanh', 'Lê Võ Minh Anh', 'Ruby', 2, 'rabbit', 0, 0, 0, 0, false),
-  ('vogau', 'Lê Võ (Bé Gấu)', 'Gấu', 2, 'bear', 0, 0, 0, 0, false),
+  ('tuyetvan', 'Lê Võ Tuyết Vân', 'Gấu', 2, 'bear', 0, 0, 0, 0, false),
   ('duyanh', 'Nguyễn Đình Duy Anh', 'Beo', 2, 'dino', 0, 0, 0, 0, false),
   ('thienphuc', 'Nguyễn Thiên Phúc', 'Tony', 1, 'dino', 0, 0, 0, 0, false),
   ('thientra', 'Nguyễn Võ Thiên Trà', 'Bé', 1, 'cat', 0, 0, 0, 0, false),
