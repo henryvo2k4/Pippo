@@ -1,5 +1,5 @@
 -- =================================================================================
--- WONDERVERSE 3D - SUPABASE POSTGRESQL SCHEMA (CHUẨN HÓA 9 HỌC SINH & BẢO MẬT)
+-- PIPPO 3D - SUPABASE POSTGRESQL SCHEMA (CHUẨN HÓA 9 HỌC SINH & BẢO MẬT)
 -- Hệ thống Học Tiếng Anh 3D Tương Tác (Từ Mầm Non Đến Lớp 10)
 -- Cách dùng: Copy toàn bộ nội dung file này dán vào Supabase SQL Editor và bấm RUN.
 -- =================================================================================
@@ -12,7 +12,7 @@ create table if not exists public.student_profiles (
   id uuid primary key default uuid_generate_v4(),
   account_id uuid references auth.users(id) on delete set null,
   username text unique not null,
-  full_name text not null default 'Học Sinh WonderVerse',
+  full_name text not null default 'Học Sinh Pippo',
   nickname text not null default 'Bé Chăm Ngoan',
   grade_tier smallint not null default 1 check (grade_tier between 1 and 4),
   -- 1: Sprout (Mầm non 1-5t), 2: Explorer (Lớp 1-3), 3: Adventurer (Lớp 4-5), 4: Master (Lớp 6-10)
@@ -51,7 +51,7 @@ create table if not exists public.student_profiles (
 
 -- Bổ sung các cột nếu bảng đã tồn tại từ trước
 alter table public.student_profiles add column if not exists username text;
-alter table public.student_profiles add column if not exists full_name text default 'Học Sinh WonderVerse';
+alter table public.student_profiles add column if not exists full_name text default 'Học Sinh Pippo';
 alter table public.student_profiles add column if not exists has_claimed_welcome_gift boolean default false;
 create unique index if not exists idx_student_profiles_username on public.student_profiles (username);
 

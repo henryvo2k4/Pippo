@@ -1,15 +1,21 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const STORAGE_URL_KEY = 'wonderverse_supabase_url';
-const STORAGE_ANON_KEY = 'wonderverse_supabase_anon_key';
+const STORAGE_URL_KEY = 'pippo_supabase_url';
+const STORAGE_ANON_KEY = 'pippo_supabase_anon_key';
+const LEGACY_URL_KEY = 'wonderverse_supabase_url';
+const LEGACY_ANON_KEY = 'wonderverse_supabase_anon_key';
 
 let supabaseInstance: SupabaseClient | null = null;
 
 export function getSupabaseConfig() {
   const envUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
   const envKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
-  const localUrl = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_URL_KEY) : null;
-  const localKey = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_ANON_KEY) : null;
+  const localUrl = typeof window !== 'undefined'
+    ? localStorage.getItem(STORAGE_URL_KEY) || localStorage.getItem(LEGACY_URL_KEY)
+    : null;
+  const localKey = typeof window !== 'undefined'
+    ? localStorage.getItem(STORAGE_ANON_KEY) || localStorage.getItem(LEGACY_ANON_KEY)
+    : null;
 
   const url = (localUrl || envUrl || '').trim();
   const anonKey = (localKey || envKey || '').trim();

@@ -18,10 +18,10 @@ export interface PreconfiguredStudent {
 export const WELCOME_GIFT_REWARD = {
   gems: 1000,
   stars: 50,
-  title: '🎁 Hộp Quà Tân Thủ WonderVerse 3D',
+  title: '🎁 Hộp Quà Tân Thủ Pippo 3D',
   subtitle: 'Món quà đặc biệt dành tặng bé khi lần đầu đăng nhập!',
   description:
-    'Chúc mừng bé đã gia nhập thế giới WonderVerse 3D! Bạn nhận được 1,000 Ngọc Cầu Vồng 💎 và 50 Sao ⭐ để thỏa sức vào Tủ Đồ 3D sắm trang phục hoàng gia và trang trí Đảo Cá Nhân của mình nhé!',
+    'Chúc mừng bé đã gia nhập thế giới Pippo 3D! Bạn nhận được 1,000 Ngọc Cầu Vồng 💎 và 50 Sao ⭐ để thỏa sức vào Tủ Đồ 3D sắm trang phục hoàng gia và trang trí Đảo Cá Nhân của mình nhé!',
 };
 
 export const PRECONFIGURED_STUDENTS: PreconfiguredStudent[] = [
@@ -154,6 +154,7 @@ function normalizeStr(s: string): string {
     .toLowerCase()
     .trim()
     .replace(/@pippo\.app$/i, '')
+    .replace(/@pippo\.edu\.vn$/i, '')
     .replace(/@wonderverse\.edu\.vn$/i, '');
 }
 

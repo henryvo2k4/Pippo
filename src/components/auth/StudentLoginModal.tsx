@@ -88,7 +88,7 @@ export const StudentLoginModal: React.FC<StudentLoginModalProps> = ({ isOpen, on
             <div className="flex items-center gap-3.5">
               <img
                 src="/logo.png"
-                alt="WonderVerse Logo"
+                alt="Pippo Logo"
                 className="w-14 h-14 object-contain rounded-2xl drop-shadow-md border border-amber-300/60 bg-white p-1"
                 onError={(e) => {
                   (e.target as HTMLElement).style.display = 'none';
@@ -97,7 +97,7 @@ export const StudentLoginModal: React.FC<StudentLoginModalProps> = ({ isOpen, on
               <div>
                 <div className="flex items-center gap-2">
                   <h2 className="text-xl sm:text-2xl font-display font-extrabold text-slate-900">
-                    Đăng Nhập Học Sinh WonderVerse 3D
+                    Đăng Nhập Học Sinh Pippo 3D
                   </h2>
                   <span className="text-[10px] font-extrabold bg-amber-400 text-slate-900 px-2 py-0.5 rounded-full uppercase tracking-wider">
                     Chính Thức

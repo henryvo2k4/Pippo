@@ -712,7 +712,7 @@ export const useGameStore = create<GameState>()(
       },
     }),
     {
-      name: 'wonderverse-3d-english-storage-v4',
+      name: 'pippo-3d-english-storage-v5',
     }
   )
 );
