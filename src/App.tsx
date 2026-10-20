@@ -34,13 +34,13 @@ import { WardrobePetStudio } from './components/wardrobe/WardrobePetStudio';
 import { StickerDioramaBook } from './components/diorama/StickerDioramaBook';
 import { Leaderboard3DPodium } from './components/leaderboard/Leaderboard3DPodium';
 import { ParentSupabaseModal } from './components/parent/ParentSupabaseModal';
-import { PersonalHomeIsland3D } from './components/homeIsland/PersonalHomeIsland3D';
+import { PersonalInventoryBackpack } from './components/inventory/PersonalInventoryBackpack';
 import { StudentLoginModal } from './components/auth/StudentLoginModal';
 import { WelcomeGiftModal } from './components/auth/WelcomeGiftModal';
 import { ChangePasswordModal } from './components/auth/ChangePasswordModal';
 import { sound } from './lib/sound';
 
-type MainSection = 'map' | 'arena' | 'home_island' | 'wardrobe' | 'diorama' | 'leaderboard';
+type MainSection = 'map' | 'arena' | 'inventory' | 'wardrobe' | 'diorama' | 'leaderboard';
 type AvatarHubTab = 'world_quests' | 'vocab_srs' | 'profile_settings';
 
 export function App() {
@@ -358,9 +358,9 @@ export function App() {
                   </span>
                 </div>
                 <div className="text-[11px] font-bold text-sky-300 flex items-center gap-1.5 mt-0.5">
-                  <span>🏝️ Đảo Riêng</span>
+                  <span>🎒 Túi Đồ</span>
                   <span>•</span>
-                  <span>👗 Tủ Đồ</span>
+                  <span>👗 Cửa Hàng</span>
                   <span>•</span>
                   <span>🧠 Từ Vựng</span>
                   <span>•</span>
@@ -623,8 +623,8 @@ export function App() {
         />
       )}
 
-      {/* ================= 3. CÁC TRANG CÁ NHÂN MỞ TỪ AVATAR CỦA BÉ (ĐẢO CÁ NHÂN, TỦ ĐỒ, STICKER, BXH) ================= */}
-      {(activeSection === 'home_island' ||
+      {/* ================= 3. CÁC TRANG CÁ NHÂN MỞ TỪ AVATAR CỦA BÉ (TÚI ĐỒ, CỬA HÀNG 3D, STICKER, BXH) ================= */}
+      {(activeSection === 'inventory' ||
         activeSection === 'wardrobe' ||
         activeSection === 'diorama' ||
         activeSection === 'leaderboard') && (
@@ -644,8 +644,8 @@ export function App() {
 
             <div className="bg-slate-900/80 backdrop-blur-xl border border-white/20 rounded-2xl p-1 flex items-center gap-1.5">
               {[
-                { id: 'home_island' as const, label: 'Đảo Cá Nhân 3D', emoji: '🏝️' },
-                { id: 'wardrobe' as const, label: 'Tủ Đồ 3D & Pet', emoji: '👗' },
+                { id: 'inventory' as const, label: 'Túi Đồ Cá Nhân', emoji: '🎒' },
+                { id: 'wardrobe' as const, label: 'Cửa Hàng 3D & Pet', emoji: '👗' },
                 { id: 'diorama' as const, label: 'Sổ Sticker', emoji: '📒' },
                 { id: 'leaderboard' as const, label: 'Bảng Xếp Hạng', emoji: '🏆' },
               ].map((tab) => (
@@ -685,7 +685,12 @@ export function App() {
           </div>
 
           <div className="flex-1 overflow-hidden">
-            {activeSection === 'home_island' && <PersonalHomeIsland3D />}
+            {activeSection === 'inventory' && (
+              <PersonalInventoryBackpack
+                onOpenWardrobe={() => setActiveSection('wardrobe')}
+                onOpenDiorama={() => setActiveSection('diorama')}
+              />
+            )}
             {activeSection === 'wardrobe' && <WardrobePetStudio />}
             {activeSection === 'diorama' && <StickerDioramaBook />}
             {activeSection === 'leaderboard' && <Leaderboard3DPodium />}
@@ -814,14 +819,14 @@ export function App() {
                       onClick={() => {
                         sound.playClick();
                         setShowAvatarHubModal(false);
-                        setActiveSection('home_island');
+                        setActiveSection('inventory');
                       }}
-                      className="p-4 rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white text-left shadow-lg hover:scale-105 transition-transform cursor-pointer border-2 border-emerald-200"
+                      className="p-4 rounded-3xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-left shadow-lg hover:scale-105 transition-transform cursor-pointer border-2 border-indigo-200"
                     >
-                      <div className="text-4xl mb-2">🏝️</div>
-                      <div className="font-display font-extrabold text-sm">Đảo Cá Nhân 3D</div>
-                      <div className="text-[11px] text-emerald-100 mt-0.5">
-                        Xây tượng đá, cổng chào & lâu đài trên đảo riêng
+                      <div className="text-4xl mb-2">🎒</div>
+                      <div className="font-display font-extrabold text-sm">Túi Đồ Cá Nhân</div>
+                      <div className="text-[11px] text-indigo-100 mt-0.5">
+                        Quản lý toàn bộ trang bị 3D, thú cưng & vật phẩm hỗ trợ
                       </div>
                     </button>
 

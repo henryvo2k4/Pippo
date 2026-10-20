@@ -101,7 +101,7 @@ export const WelcomeGiftModal: React.FC<WelcomeGiftModalProps> = ({
             </div>
 
             <p className="text-xs text-slate-500 font-bold">
-              Bé có thể dùng số Ngọc này trong <strong>Tủ Đồ 3D</strong> để chọn vương miện, áo choàng, cánh thiên thần, hoặc mua tượng trang trí cho <strong>Đảo Cá Nhân</strong>!
+              Bé có thể dùng số Ngọc này trong <strong>Cửa Hàng 3D</strong> để sắm trang phục, kiếm, khiên, cánh thiên thần hoặc nhận nuôi <strong>Thú Cưng Đồng Hành</strong>!
             </p>
 
             <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
