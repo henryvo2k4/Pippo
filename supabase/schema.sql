@@ -1,5 +1,5 @@
 -- =================================================================================
--- PIPPO 3D - SUPABASE POSTGRESQL SCHEMA (CHUẨN HÓA 9 HỌC SINH & BẢO MẬT)
+-- PIPPO ENGLISH - SUPABASE POSTGRESQL SCHEMA (CHUẨN HÓA 9 HỌC SINH & BẢO MẬT)
 -- Hệ thống Học Tiếng Anh 3D Tương Tác (Từ Mầm Non Đến Lớp 10)
 -- Cách dùng: Copy toàn bộ nội dung file này dán vào Supabase SQL Editor và bấm RUN.
 -- =================================================================================

@@ -45,7 +45,7 @@ export const WelcomeGiftModal: React.FC<WelcomeGiftModalProps> = ({
                 Món Quà Đặc Biệt Khởi Đầu
               </span>
               <h2 className="text-2xl font-display font-extrabold text-slate-900 mt-2">
-                Chào Mừng {nickname} Đến Với Pippo 3D!
+                Chào Mừng {nickname} Đến Với Pippo English!
               </h2>
               <p className="text-xs font-bold text-slate-600 mt-2 leading-relaxed">
                 Thầy/Cô và các bạn nhỏ đã chuẩn bị một rương báu tân thủ bí mật để bé thỏa thích sắm trang phục hoàng gia, thú cưng và đồ trang trí cho hòn đảo của riêng mình!

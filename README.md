@@ -1,6 +1,6 @@
-# 🌟 Pippo 3D – Hệ Thống Web Học Tiếng Anh 3D Tương Tác
+# 🌟 Pippo English – Hệ Thống Web Học Tiếng Anh Tương Tác
 
-Nền tảng học tiếng Anh 3D phong cách **Cute Claymorphism / Toy 3D** dành cho trẻ từ **Mầm non (4–6 tuổi), Tiểu học (Lớp 1–5) đến Đầu Cấp 2 (Lớp 6–7)**.
+Nền tảng học tiếng Anh tương tác phong cách **Cute Claymorphism / Toy 3D** dành cho trẻ từ **Mầm non (4–6 tuổi), Tiểu học (Lớp 1–5) đến Cấp 2 (Lớp 6–10)**.
 
 ## 🚀 Cách Chạy Dự Án Ngay Trên Máy
 
