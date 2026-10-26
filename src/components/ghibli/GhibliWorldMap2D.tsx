@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { IslandLesson, IslandZoneMeta, KingdomInfo } from '../../data/curriculumData';
 import { sound } from '../../lib/sound';
+import { GhibliVillage1InteractiveMap } from './GhibliVillage1InteractiveMap';
 
 interface GhibliWorldMap2DProps {
   islands: IslandLesson[]; // 80 bài học của cấp độ hiện tại
@@ -145,6 +146,7 @@ export const GhibliWorldMap2D: React.FC<GhibliWorldMap2DProps> = ({
   islands,
   completedLessons,
   lessonStars,
+  lessonMistakes,
   selectedIslandId,
   onSelectIsland,
   tierInfo,
@@ -519,166 +521,170 @@ export const GhibliWorldMap2D: React.FC<GhibliWorldMap2DProps> = ({
               </div>
             </div>
 
-            {/* CON ĐƯỜNG LÀNG: 10 NGÔI NHÀ VÀ TRÙM CUỐI (LEVELS 1 ĐẾN 10) */}
-            <div className="flex-1 w-full overflow-x-auto overflow-y-hidden flex items-center px-6 py-2">
-              <div className="min-w-[1380px] h-full flex items-center justify-between relative px-8">
-                {/* Con đường lát đá nhỏ trong làng */}
-                <svg
-                  className="absolute left-0 right-0 top-1/2 -translate-y-1/2 w-full h-28 pointer-events-none z-0"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M 40 60 Q 200 15, 380 60 T 700 60 T 1020 60 T 1340 50"
-                    fill="none"
-                    stroke="#8d6e63"
-                    strokeWidth="28"
-                    strokeLinecap="round"
-                    opacity="0.85"
-                  />
-                  <path
-                    d="M 40 60 Q 200 15, 380 60 T 700 60 T 1020 60 T 1340 50"
-                    fill="none"
-                    stroke="#fef3c7"
-                    strokeWidth="3"
-                    strokeDasharray="10 20"
-                    strokeLinecap="round"
-                    opacity="0.4"
-                  />
-                </svg>
+            {/* NẾU LÀ LÀNG 1: HIỂN THỊ BẢN ĐỒ TRANH VẼ TƯƠNG TÁC ĐỈNH CAO GHIBLI CÓ ANIMATION */}
+            {currentVillageIndex === 1 ? (
+              <div className="flex-1 w-full h-full min-h-[580px] flex items-center justify-center p-1 sm:p-2">
+                <GhibliVillage1InteractiveMap
+                  lessons={currentVillageLessons}
+                  completedLessons={completedLessons}
+                  lessonStars={lessonStars}
+                  lessonMistakes={lessonMistakes}
+                  frontierLessonId={frontierIsland?.id}
+                  onSelectLesson={onSelectIsland}
+                  nickname={nickname}
+                />
+              </div>
+            ) : (
+              /* CÁC LÀNG TIẾP THEO: CON ĐƯỜNG LÀNG TIÊU CHUẨN */
+              <div className="flex-1 w-full overflow-x-auto overflow-y-hidden flex items-center px-6 py-2">
+                <div className="min-w-[1380px] h-full flex items-center justify-between relative px-8">
+                  {/* Con đường lát đá nhỏ trong làng */}
+                  <svg
+                    className="absolute left-0 right-0 top-1/2 -translate-y-1/2 w-full h-28 pointer-events-none z-0"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M 40 60 Q 200 15, 380 60 T 700 60 T 1020 60 T 1340 50"
+                      fill="none"
+                      stroke="#8d6e63"
+                      strokeWidth="28"
+                      strokeLinecap="round"
+                      opacity="0.85"
+                    />
+                    <path
+                      d="M 40 60 Q 200 15, 380 60 T 700 60 T 1020 60 T 1340 50"
+                      fill="none"
+                      stroke="#fef3c7"
+                      strokeWidth="3"
+                      strokeDasharray="10 20"
+                      strokeLinecap="round"
+                      opacity="0.4"
+                    />
+                  </svg>
 
-                {/* 10 Địa Điểm: 9 Ngôi Nhà + 1 Công Trình Boss Cuối */}
-                {currentVillageLessons.map((lesson, idx) => {
-                  const levelNum = idx + 1; // 1 đến 10
-                  const isBoss = levelNum === 10;
-                  const houseArchetype = HOUSE_ARCHETYPES[idx] || HOUSE_ARCHETYPES[0];
-                  const isCompleted = completedLessons.includes(lesson.id);
-                  const isCurrent = lesson.id === frontierIsland?.id;
-                  const stars = lessonStars[lesson.id] || (isCompleted ? 3 : 0);
+                  {/* 10 Địa Điểm: 9 Ngôi Nhà + 1 Công Trình Boss Cuối */}
+                  {currentVillageLessons.map((lesson, idx) => {
+                    const levelNum = idx + 1; // 1 đến 10
+                    const isBoss = levelNum === 10;
+                    const houseArchetype = HOUSE_ARCHETYPES[idx] || HOUSE_ARCHETYPES[0];
+                    const isCompleted = completedLessons.includes(lesson.id);
+                    const isCurrent = lesson.id === frontierIsland?.id;
+                    const stars = lessonStars[lesson.id] || (isCompleted ? 3 : 0);
 
-                  // Kiểm tra xem bài này đã mở khóa chưa
-                  // Bài đầu tiên mở sẵn nếu làng mở; các bài sau mở khi bài trước hoàn thành
-                  const prevLesson = currentVillageLessons[idx - 1];
-                  const isUnlocked = idx === 0 ? true : completedLessons.includes(prevLesson.id);
+                    const prevLesson = currentVillageLessons[idx - 1];
+                    const isUnlocked = idx === 0 ? true : completedLessons.includes(prevLesson.id);
+                    const waveY = Math.sin(idx * 1.2) * 24;
 
-                  // Vị trí uốn lượn nhấp nhô của từng ngôi nhà
-                  const waveY = Math.sin(idx * 1.2) * 24;
-
-                  return (
-                    <div
-                      key={lesson.id}
-                      style={{ transform: `translateY(${waveY}px)` }}
-                      className="relative z-10 flex flex-col items-center group"
-                      onMouseEnter={() => setHoveredLocation(levelNum)}
-                      onMouseLeave={() => setHoveredLocation(null)}
-                    >
-                      {/* Bảng chỉ dẫn: Bé đang học nhà này */}
-                      {isCurrent && (
-                        <div className="absolute -top-12 z-30 flex flex-col items-center animate-bounce">
-                          <div className="bg-amber-400 text-amber-950 font-display font-black text-[11px] px-3 py-0.5 rounded-full border-2 border-white shadow-xl flex items-center gap-1">
-                            <span>📍</span>
-                            <span>Nhà số {levelNum}</span>
-                          </div>
-                          <div className="w-0 h-0 border-l-4 border-r-4 border-t-5 border-t-amber-400 border-l-transparent border-r-transparent" />
-                        </div>
-                      )}
-
-                      {/* THẺ NGÔI NHÀ / CÔNG TRÌNH BOSS */}
+                    return (
                       <div
-                        onClick={() => {
-                          sound.playClick();
-                          onSelectIsland(lesson, isUnlocked);
-                        }}
-                        className={`w-32 sm:w-36 rounded-2xl p-3 transition-all duration-200 relative cursor-pointer ${
-                          isBoss
-                            ? isUnlocked
-                              ? 'ghibli-parchment-card border-3 border-amber-400 shadow-2xl animate-ghibli-boss'
-                              : 'bg-stone-900 border-2 border-stone-700 opacity-60'
-                            : isUnlocked
-                            ? 'ghibli-parchment-card hover:scale-110 hover:-translate-y-2 shadow-xl'
-                            : 'bg-stone-900/80 border-2 border-stone-800 opacity-50 grayscale'
-                        }`}
+                        key={lesson.id}
+                        style={{ transform: `translateY(${waveY}px)` }}
+                        className="relative z-10 flex flex-col items-center group"
+                        onMouseEnter={() => setHoveredLocation(levelNum)}
+                        onMouseLeave={() => setHoveredLocation(null)}
                       >
-                        {/* Ổ Khóa khi Nhà Chưa Mở */}
-                        {!isUnlocked && (
-                          <div className="absolute inset-0 rounded-2xl bg-black/50 backdrop-blur-xs flex items-center justify-center z-20">
-                            <Lock className="w-5 h-5 text-amber-200" />
+                        {/* Bảng chỉ dẫn: Bé đang học nhà này */}
+                        {isCurrent && (
+                          <div className="absolute -top-12 z-30 flex flex-col items-center animate-bounce">
+                            <div className="bg-amber-400 text-amber-950 font-display font-black text-[11px] px-3 py-0.5 rounded-full border-2 border-white shadow-xl flex items-center gap-1">
+                              <span>📍</span>
+                              <span>Nhà số {levelNum}</span>
+                            </div>
+                            <div className="w-0 h-0 border-l-4 border-r-4 border-t-5 border-t-amber-400 border-l-transparent border-r-transparent" />
                           </div>
                         )}
 
-                        {/* Huy Hiệu Trùm Cuối (Boss Badge 👑) */}
-                        {isBoss && (
-                          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-rose-500 text-white text-[10px] font-display font-black px-2.5 py-0.5 rounded-full border border-white shadow-lg flex items-center gap-1 z-20 whitespace-nowrap">
-                            <Crown className="w-3.5 h-3.5 text-yellow-200" />
-                            <span>TRÙM CUỐI</span>
-                          </div>
-                        )}
-
-                        {/* Hình Ảnh Ngôi Nhà */}
+                        {/* THẺ NGÔI NHÀ / CÔNG TRÌNH BOSS */}
                         <div
-                          className={`w-full h-18 rounded-xl flex flex-col items-center justify-center relative shadow-inner ${
+                          onClick={() => {
+                            sound.playClick();
+                            onSelectIsland(lesson, isUnlocked);
+                          }}
+                          className={`w-32 sm:w-36 rounded-2xl p-3 transition-all duration-200 relative cursor-pointer ${
                             isBoss
-                              ? 'bg-gradient-to-br from-amber-200 via-rose-100 to-amber-300'
-                              : 'bg-gradient-to-br from-amber-50 to-amber-100'
+                              ? isUnlocked
+                                ? 'ghibli-parchment-card border-3 border-amber-400 shadow-2xl animate-ghibli-boss'
+                                : 'bg-stone-900 border-2 border-stone-700 opacity-60'
+                              : isUnlocked
+                              ? 'ghibli-parchment-card hover:scale-110 hover:-translate-y-2 shadow-xl'
+                              : 'bg-stone-900/80 border-2 border-stone-800 opacity-50 grayscale'
                           }`}
                         >
-                          <span
-                            className={`text-3xl filter drop-shadow transition-transform group-hover:scale-110 ${
-                              isBoss ? 'text-4xl' : ''
+                          {!isUnlocked && (
+                            <div className="absolute inset-0 rounded-2xl bg-black/50 backdrop-blur-xs flex items-center justify-center z-20">
+                              <Lock className="w-5 h-5 text-amber-200" />
+                            </div>
+                          )}
+
+                          {isBoss && (
+                            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-rose-500 text-white text-[10px] font-display font-black px-2.5 py-0.5 rounded-full border border-white shadow-lg flex items-center gap-1 z-20 whitespace-nowrap">
+                              <Crown className="w-3.5 h-3.5 text-yellow-200" />
+                              <span>TRÙM CUỐI</span>
+                            </div>
+                          )}
+
+                          <div
+                            className={`w-full h-18 rounded-xl flex flex-col items-center justify-center relative shadow-inner ${
+                              isBoss
+                                ? 'bg-gradient-to-br from-amber-200 via-rose-100 to-amber-300'
+                                : 'bg-gradient-to-br from-amber-50 to-amber-100'
                             }`}
                           >
-                            {isBoss ? '🏰' : houseArchetype.emoji}
-                          </span>
-                          <span className="text-[9px] font-extrabold text-amber-900/90 bg-white/80 px-2 py-0.2 rounded-full mt-1">
-                            {isBoss ? 'Cửa Ải Boss 👑' : `Lv.${levelNum}`}
-                          </span>
-                        </div>
-
-                        {/* Tên Bài Học & Số Sao */}
-                        <div className="mt-2 text-center">
-                          <h4 className="font-display font-extrabold text-xs text-amber-950 line-clamp-1">
-                            {isBoss ? currentVillageData.bossName : lesson.title.replace(/^Đảo #\d+:\s*/, '')}
-                          </h4>
-
-                          {/* Đánh giá Sao (★ ★ ★) */}
-                          <div className="flex items-center justify-center gap-0.5 mt-1">
-                            {[1, 2, 3].map((s) => (
-                              <Star
-                                key={s}
-                                className={`w-3.5 h-3.5 ${
-                                  s <= stars
-                                    ? 'fill-amber-400 text-amber-500'
-                                    : 'fill-stone-300 text-stone-400'
-                                }`}
-                              />
-                            ))}
+                            <span
+                              className={`text-3xl filter drop-shadow transition-transform group-hover:scale-110 ${
+                                isBoss ? 'text-4xl' : ''
+                              }`}
+                            >
+                              {isBoss ? '🏰' : houseArchetype.emoji}
+                            </span>
+                            <span className="text-[9px] font-extrabold text-amber-900/90 bg-white/80 px-2 py-0.2 rounded-full mt-1">
+                              {isBoss ? 'Cửa Ải Boss 👑' : `Lv.${levelNum}`}
+                            </span>
                           </div>
 
-                          {/* Nút Làm Bài */}
-                          <button
-                            type="button"
-                            className={`w-full mt-1.5 py-1 px-2 rounded-lg font-display font-extrabold text-[10px] flex items-center justify-center gap-1 transition-all ${
-                              isUnlocked
-                                ? isBoss
-                                  ? 'btn-ghibli-amber text-amber-950 font-black'
-                                  : 'btn-ghibli-leaf text-white'
-                                : 'bg-stone-700 text-stone-400 cursor-not-allowed'
-                            }`}
-                          >
-                            <Play className="w-2.5 h-2.5 fill-current" />
-                            <span>{isCompleted ? 'Học Lại' : isUnlocked ? 'Vào Học' : 'Khóa'}</span>
-                          </button>
-                        </div>
-                      </div>
+                          <div className="mt-2 text-center">
+                            <h4 className="font-display font-extrabold text-xs text-amber-950 line-clamp-1">
+                              {isBoss ? currentVillageData.bossName : lesson.title.replace(/^Đảo #\d+:\s*/, '')}
+                            </h4>
 
-                      {/* Tên Công Trình Ghibli dưới cột mốc */}
-                      <span className="mt-1.5 text-[10px] font-bold text-amber-100/80 bg-stone-900/80 px-2 py-0.5 rounded-full border border-amber-300/20 max-w-[130px] truncate">
-                        {isBoss ? 'Cửa Ải Cuối' : houseArchetype.name}
-                      </span>
-                    </div>
-                  );
-                })}
+                            <div className="flex items-center justify-center gap-0.5 mt-1">
+                              {[1, 2, 3].map((s) => (
+                                <Star
+                                  key={s}
+                                  className={`w-3.5 h-3.5 ${
+                                    s <= stars
+                                      ? 'fill-amber-400 text-amber-500'
+                                      : 'fill-stone-300 text-stone-400'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+
+                            <button
+                              type="button"
+                              className={`w-full mt-1.5 py-1 px-2 rounded-lg font-display font-extrabold text-[10px] flex items-center justify-center gap-1 transition-all ${
+                                isUnlocked
+                                  ? isBoss
+                                    ? 'btn-ghibli-amber text-amber-950 font-black'
+                                    : 'btn-ghibli-leaf text-white'
+                                  : 'bg-stone-700 text-stone-400 cursor-not-allowed'
+                              }`}
+                            >
+                              <Play className="w-2.5 h-2.5 fill-current" />
+                              <span>{isCompleted ? 'Học Lại' : isUnlocked ? 'Vào Học' : 'Khóa'}</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        <span className="mt-1.5 text-[10px] font-bold text-amber-100/80 bg-stone-900/80 px-2 py-0.5 rounded-full border border-amber-300/20 max-w-[130px] truncate">
+                          {isBoss ? 'Cửa Ải Cuối' : houseArchetype.name}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
       </div>
