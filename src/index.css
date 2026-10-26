@@ -97,3 +97,102 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.55);
 }
+
+/* ============================================================================
+   GHIBLI ENCHANTED FOREST STYLES & ANIMATIONS (MỸ THUẬT RỪNG CỔ TÍCH GHIBLI)
+   ============================================================================ */
+
+@keyframes ghibli-komorebi {
+  0%, 100% {
+    opacity: 0.28;
+    transform: translateY(0) scaleY(1);
+  }
+  50% {
+    opacity: 0.52;
+    transform: translateY(12px) scaleY(1.05);
+  }
+}
+
+@keyframes ghibli-sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2.5deg); }
+}
+
+@keyframes ghibli-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.025); }
+}
+
+@keyframes ghibli-pulse-gold {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 15px rgba(250, 204, 21, 0.45), 0 0 30px rgba(250, 204, 21, 0.2);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 25px rgba(250, 204, 21, 0.8), 0 0 50px rgba(250, 204, 21, 0.4);
+  }
+}
+
+.animate-ghibli-sway {
+  animation: ghibli-sway 4.5s ease-in-out infinite;
+}
+
+.animate-ghibli-breathe {
+  animation: ghibli-breathe 3.2s ease-in-out infinite;
+}
+
+.animate-ghibli-boss {
+  animation: ghibli-pulse-gold 2.4s ease-in-out infinite;
+}
+
+/* Thẻ Giấy Cổ Tích Màu Nước Ghibli */
+.ghibli-parchment-card {
+  background: linear-gradient(135deg, #fdfbf7 0%, #f6f1e5 100%);
+  border: 3px solid #d4c3a3;
+  box-shadow:
+    0 10px 25px rgba(45, 90, 39, 0.15),
+    0 2px 6px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Thẻ Gỗ Mộc Rừng Sồi */
+.ghibli-wood-card {
+  background: linear-gradient(180deg, #6d4c41 0%, #4e342e 100%);
+  border: 2px solid #8d6e63;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.28),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+/* Nút Bấm Gỗ Cổ Tích */
+.btn-ghibli-leaf {
+  background: linear-gradient(180deg, #52b788 0%, #2d6a4f 100%);
+  border: 2px solid #74c69d;
+  box-shadow: 0 5px 0 #1b4332, 0 8px 16px rgba(27, 67, 50, 0.35);
+  transition: all 0.14s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.btn-ghibli-leaf:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 #1b4332, 0 12px 20px rgba(27, 67, 50, 0.4);
+}
+.btn-ghibli-leaf:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #1b4332, 0 4px 8px rgba(27, 67, 50, 0.25);
+}
+
+.btn-ghibli-amber {
+  background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
+  border: 2px solid #fde68a;
+  box-shadow: 0 5px 0 #92400e, 0 8px 16px rgba(146, 64, 14, 0.35);
+  transition: all 0.14s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.btn-ghibli-amber:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 #92400e, 0 12px 20px rgba(146, 64, 14, 0.4);
+}
+.btn-ghibli-amber:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #92400e, 0 4px 8px rgba(146, 64, 14, 0.25);
+}
+

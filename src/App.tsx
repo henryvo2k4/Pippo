@@ -29,6 +29,7 @@ import {
 } from './data/curriculumData';
 import { useGameStore } from './store/useGameStore';
 import { KingdomWorldMap3D } from './components/three/Avatar3DScene';
+import { GhibliWorldMap2D } from './components/ghibli/GhibliWorldMap2D';
 import { ThreeErrorBoundary } from './components/three/ThreeErrorBoundary';
 import { MiniGameArena } from './components/games/MiniGameArena';
 import { WardrobePetStudio } from './components/wardrobe/WardrobePetStudio';
@@ -252,24 +253,24 @@ export function App() {
     (q) => q.current >= q.target && !claimedDailyQuestIds.includes(q.id)
   ).length;
 
-  // Khi người chơi bấm vào 1 Hòn Đảo trên Bản Đồ 3D
+  // Khi người chơi bấm vào 1 Ngôi Nhà / Cột Mốc Cổ Tích
   const handleSelectIslandOn3DMap = (isl: IslandLesson, isUnlocked: boolean) => {
     if (!isUnlocked) {
       sound.playGentleTryAgain();
       triggerMapToast(
-        `🔒 Đảo #${isl.islandNumber} đang khóa! Bé hãy hoàn thành Đảo #${isl.islandNumber - 1} trước để mở khóa nhé!`
+        isl.isBossIsland
+          ? `👑 Trùm Cuối Làng #${isl.zoneIndex} đang khóa! Bé hãy vượt qua 9 ngôi nhà trước đó nhé!`
+          : `🔒 Ngôi Nhà #${isl.islandNumber} đang khóa! Bé hãy hoàn thành Ngôi Nhà #${isl.islandNumber - 1} trước nhé!`
       );
       if (frontierIsland) {
         setSelectedIsland(frontierIsland);
-        setCameraTargetX(frontierIsland.position3D[0]);
       }
       return;
     }
 
     setSelectedIsland(isl);
-    setCameraTargetX(isl.position3D[0]);
     setShowIslandMissionCard(true);
-    sound.speakEnglish(`Island ${isl.islandNumber}: ${isl.title}`);
+    sound.speakEnglish(isl.isBossIsland ? `Boss Level: ${isl.title}` : `House ${isl.islandNumber}: ${isl.title}`);
   };
 
   const currentZoneOfSelected =
@@ -306,26 +307,23 @@ export function App() {
         </div>
       )}
 
-      {/* ================= 1. TRANG CHÍNH: BẢN ĐỒ ĐẢO 3D TOÀN MÀN HÌNH TINH GỌN ================= */}
+      {/* ================= 1. TRANG CHÍNH: BẢN ĐỒ CỔ TÍCH 2D GHIBLI (8 LÀNG & 80 NGÔI NHÀ) ================= */}
       {activeSection === 'map' && (
         <div className="w-full h-full relative overflow-hidden">
-          {/* Không gian 3D trải dài toàn bộ 80 Hòn Đảo */}
+          {/* Không gian 2D Ghibli: Đại lộ 8 Làng & Bản đồ chi tiết 10 Ngôi nhà */}
           <div className="absolute inset-0 w-full h-full">
-            <ThreeErrorBoundary>
-              <KingdomWorldMap3D
-                islands={allTierIslands}
-                completedLessons={completedLessons}
-                lessonStars={lessonStars}
-                selectedIslandId={selectedIsland.id}
-                onSelectIsland={handleSelectIslandOn3DMap}
-                avatarBase={avatarBase}
-                equippedSkin={equippedSkin}
-                petState={petState}
-                cameraTargetX={cameraTargetX}
-                onCameraTargetXChange={(newX) => setCameraTargetX(newX)}
-                hideHtmlOverlays={isAnyModalOpen}
-              />
-            </ThreeErrorBoundary>
+            <GhibliWorldMap2D
+              islands={allTierIslands}
+              completedLessons={completedLessons}
+              lessonStars={lessonStars}
+              lessonMistakes={lessonMistakes}
+              selectedIslandId={selectedIsland.id}
+              onSelectIsland={handleSelectIslandOn3DMap}
+              tierInfo={kingdomInfo}
+              tierZones={zonesForTier}
+              avatarBase={avatarBase}
+              nickname={nickname}
+            />
           </div>
 
           {/* THANH HUD NỔI PHÍA TRÊN: CỰC KỲ TINH GỌN (TRÁI: AVATAR HUB • PHẢI: ĐIỂM SỐ & ÂM THANH) */}
@@ -338,7 +336,7 @@ export function App() {
                 setShowAvatarHubModal(true);
               }}
               className="pointer-events-auto bg-slate-900/85 hover:bg-slate-900 backdrop-blur-xl border-2 border-amber-300/80 rounded-3xl p-2 pr-4 shadow-2xl flex items-center gap-3 cursor-pointer hover:scale-105 transition-all group relative"
-              title="Bấm vào Avatar để mở Đảo Cá Nhân, Tủ Đồ 3D, Sổ Từ Vựng, Nhiệm Vụ Ngày và Cài Đặt Độ Tuổi"
+              title="Bấm vào Avatar để mở Túi Đồ, Cửa Hàng, Sổ Từ Vựng, Nhiệm Vụ Ngày và Cài Đặt Độ Tuổi"
             >
               {unclaimedReadyQuestsCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-rose-500 text-white font-display font-extrabold text-[10px] px-2 py-0.5 rounded-full border-2 border-white shadow animate-bounce">
@@ -388,7 +386,7 @@ export function App() {
               </div>
               <div
                 className="px-3 py-1 rounded-2xl bg-pink-500/20 border border-pink-400/40 flex items-center gap-1 font-display font-extrabold text-xs text-pink-300"
-                title="Ngọc Cầu Vồng Mua Trang Phục & Xây Đảo Cá Nhân"
+                title="Ngọc Cầu Vồng Mua Trang Phục & Thú Cưng"
               >
                 💎 {rainbowGems}
               </div>
@@ -419,127 +417,37 @@ export function App() {
             </div>
           </header>
 
-          {/* THANH KÉO LƯỚT DỌC 80 HÒN ĐẢO 3D Ở ĐÁY MÀN HÌNH (TÍCH HỢP CỘT MỐC V1..V8 SIÊU GỌN) */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 w-full max-w-3xl px-4 pointer-events-none">
-            <div className="pointer-events-auto bg-slate-900/85 backdrop-blur-xl border-2 border-white/25 rounded-3xl px-4 py-2.5 shadow-2xl flex items-center gap-3 text-white">
-              <button
-                onClick={() => {
-                  sound.playClick();
-                  if (frontierIsland) {
-                    setSelectedIsland(frontierIsland);
-                    setCameraTargetX(frontierIsland.position3D[0]);
-                    setShowIslandMissionCard(true);
-                  }
-                }}
-                className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-display font-extrabold text-xs px-3.5 py-2.5 rounded-2xl whitespace-nowrap flex items-center gap-1.5 shadow cursor-pointer"
-                title="Bay ngay tới Hòn Đảo đang mở khóa tiếp theo"
-              >
-                <MapPin className="w-4 h-4" />
-                <span>Đảo Đang Học #{frontierIsland?.islandNumber || 1}</span>
-              </button>
-
-              <div className="flex-1 flex flex-col gap-1">
-                <div className="flex items-center justify-between text-[10px] font-bold text-slate-300 px-1">
-                  <span className="truncate">
-                    {currentViewedZone?.emoji} Vùng {currentViewedZone?.zoneIndex}:{' '}
-                    <strong className="text-white">{currentViewedZone?.vietnameseTitle}</strong>
-                  </span>
-                  <span className="text-amber-300 whitespace-nowrap ml-2">
-                    Đã mở: {completedInTierCount} / 80 Đảo
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={maxMapX}
-                  step={1}
-                  value={Math.round(cameraTargetX)}
-                  onChange={(e) => setCameraTargetX(Number(e.target.value))}
-                  className="w-full accent-amber-400 cursor-pointer h-2 bg-slate-700 rounded-lg"
-                />
-                {/* 8 chấm mốc nhảy nhanh Vùng 1 -> Vùng 8 cực gọn */}
-                <div className="flex items-center justify-between gap-1 pt-0.5">
-                  {zonesForTier.map((z) => {
-                    const firstIslandIdx = (z.zoneIndex - 1) * 10;
-                    const firstIsl = allTierIslands[firstIslandIdx];
-                    const isZoneUnlocked =
-                      firstIslandIdx === 0 ||
-                      completedLessons.includes(allTierIslands[firstIslandIdx - 1]?.id);
-                    const isCurrentZone = currentViewedZone?.zoneIndex === z.zoneIndex;
-
-                    return (
-                      <button
-                        key={z.zoneIndex}
-                        onClick={() => {
-                          sound.playClick();
-                          if (firstIsl) {
-                            setCameraTargetX(firstIsl.position3D[0]);
-                            if (isZoneUnlocked) {
-                              setSelectedIsland(firstIsl);
-                            }
-                          }
-                        }}
-                        className={`flex-1 py-0.5 rounded-lg font-display font-extrabold text-[9px] flex items-center justify-center gap-0.5 transition-all cursor-pointer ${
-                          isCurrentZone
-                            ? 'bg-amber-400 text-slate-950 shadow'
-                            : isZoneUnlocked
-                            ? 'bg-white/10 text-slate-200 hover:bg-white/20'
-                            : 'bg-slate-800/80 text-slate-500'
-                        }`}
-                        title={`${z.emoji} Vùng ${z.zoneIndex}: ${z.vietnameseTitle} (Đảo ${z.islandRange[0]}–${z.islandRange[1]})`}
-                      >
-                        <span>{isZoneUnlocked ? z.emoji : '🔒'}</span>
-                        <span>V{z.zoneIndex}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <button
-                onClick={() => {
-                  sound.playClick();
-                  setShowIslandMissionCard(true);
-                }}
-                className="btn-toy-green text-white font-display font-extrabold text-xs px-4 py-2.5 rounded-2xl whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
-              >
-                <Play className="w-3.5 h-3.5 fill-white" />
-                <span>Học Đảo #{selectedIsland.islandNumber}</span>
-              </button>
-            </div>
-          </div>
-
-          {/* POPUP THẺ NHIỆM VỤ ĐẢO (CHỈ HIỆN KHI BẤM VÀO 1 ĐẢO ĐÃ MỞ KHÓA) */}
+          {/* POPUP THẺ NHIỆM VỤ NGÔI NHÀ CỔ TÍCH (CHỈ HIỆN KHI BẤM VÀO 1 ĐỊA ĐIỂM ĐÃ MỞ KHÓA) */}
           {showIslandMissionCard && (
-            <div className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-              <div className="clay-card w-full max-w-lg rounded-3xl p-6 border-4 border-amber-300 shadow-2xl relative animate-bounce-once">
+            <div className="fixed inset-0 z-40 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+              <div className="ghibli-parchment-card w-full max-w-lg rounded-3xl p-6 border-3 border-amber-300 shadow-2xl relative animate-bounce-once">
                 <button
                   onClick={() => setShowIslandMissionCard(false)}
-                  className="absolute top-4 right-4 p-2 rounded-2xl bg-slate-100 hover:bg-rose-100 text-slate-600 hover:text-rose-600 cursor-pointer"
+                  className="absolute top-4 right-4 p-2 rounded-2xl bg-amber-100 hover:bg-rose-100 text-amber-900 hover:text-rose-600 cursor-pointer transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
 
-                {/* Nhãn Vùng & Đánh Giá Sao Của Đảo */}
+                {/* Nhãn Làng & Đánh Giá Sao */}
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 font-display font-extrabold text-xs">
-                    {currentZoneOfSelected.emoji} Vùng {selectedIsland.zoneIndex} • Đảo #{selectedIsland.islandNumber}/80
+                  <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 font-display font-extrabold text-xs border border-emerald-300">
+                    {currentZoneOfSelected.emoji} Làng #{selectedIsland.zoneIndex} • Ngôi Nhà #{selectedIsland.islandNumber}/80
                   </span>
                   {selectedIsland.isBossIsland && (
-                    <span className="px-3 py-1 rounded-full bg-rose-600 text-white font-display font-extrabold text-xs flex items-center gap-1">
-                      <Crown className="w-3.5 h-3.5" /> ĐẢO TRÙM VÙNG
+                    <span className="px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 via-rose-500 to-amber-600 text-white font-display font-black text-xs flex items-center gap-1 shadow-md">
+                      <Crown className="w-3.5 h-3.5 text-yellow-200" /> TRÙM CUỐI LÀNG #{selectedIsland.zoneIndex}
                     </span>
                   )}
-                  <div className="flex items-center gap-1 bg-slate-900 text-white px-3 py-0.5 rounded-full text-sm">
+                  <div className="flex items-center gap-1 bg-stone-900 text-white px-3 py-0.5 rounded-full text-sm">
                     {[1, 2, 3].map((s) => (
                       <span
                         key={s}
-                        className={s <= selectedIslandStars ? 'text-amber-300' : 'text-slate-600'}
+                        className={s <= selectedIslandStars ? 'text-amber-300' : 'text-stone-600'}
                       >
                         ★
                       </span>
                     ))}
-                    <span className="text-[10px] font-bold text-slate-300 ml-1">
+                    <span className="text-[10px] font-bold text-amber-200 ml-1">
                       {selectedIslandStars > 0
                         ? `(${selectedIslandStars}/3 Sao${
                             selectedIslandMistakes !== undefined
@@ -551,25 +459,26 @@ export function App() {
                   </div>
                 </div>
 
-                {/* Tiêu đề Đảo & Loại Bài Tập Riêng Biệt */}
+                {/* Tiêu đề Ngôi Nhà & Nhiệm Vụ */}
                 <div className="mt-3 flex items-center gap-3.5">
-                  <div className="text-5xl bg-amber-100 p-3 rounded-3xl border-2 border-amber-300 shadow-sm">
+                  <div className="text-5xl bg-amber-100/90 p-3 rounded-3xl border-2 border-amber-300 shadow-sm shrink-0">
                     {selectedIsland.badgeEmoji}
                   </div>
                   <div>
-                    <h2 className="text-2xl font-display font-extrabold text-slate-900 leading-tight">
+                    <h2 className="text-xl sm:text-2xl font-display font-black text-amber-950 leading-tight">
                       {selectedIsland.title}
                     </h2>
-                    <div className="text-xs font-extrabold text-indigo-600 mt-1 bg-indigo-50 inline-block px-2.5 py-1 rounded-xl border border-indigo-200">
+                    <div className="text-xs font-extrabold text-emerald-800 mt-1 bg-emerald-50 inline-block px-2.5 py-1 rounded-xl border border-emerald-300">
                       🎯 {selectedIsland.exerciseLabel}
                     </div>
                   </div>
                 </div>
 
-                {/* Danh sách từ vựng trong bài tập của Đảo này */}
+                {/* Danh sách từ vựng trong bài tập của Ngôi Nhà này */}
                 <div className="mt-4">
-                  <div className="text-[11px] font-extrabold uppercase text-slate-500 mb-2">
-                    📚 Từ vựng & Mẫu câu trong nhiệm vụ (Chạm để nghe trước):
+                  <div className="text-[11px] font-extrabold uppercase text-amber-900/80 mb-2 flex items-center gap-1">
+                    <span>📚</span>
+                    <span>Từ vựng & Mẫu câu trong ngôi nhà (Chạm để nghe thử):</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 max-h-[190px] overflow-y-auto pr-1">
                     {selectedIsland.items.map((item) => (
@@ -579,18 +488,18 @@ export function App() {
                           sound.playClick();
                           sound.speakEnglish(`${item.word}. ${item.exampleSentence}`);
                         }}
-                        className="p-2.5 rounded-2xl bg-slate-50 hover:bg-sky-50 border border-slate-200 flex items-center justify-between cursor-pointer transition-colors"
+                        className="p-2.5 rounded-2xl bg-white/80 hover:bg-emerald-50 border border-amber-200/80 flex items-center justify-between cursor-pointer transition-colors shadow-xs"
                       >
                         <div className="flex items-center gap-2">
                           <span className="text-2xl">{item.emoji}</span>
                           <div>
-                            <div className="font-display font-bold text-xs text-slate-900">
+                            <div className="font-display font-black text-xs text-amber-950">
                               {item.word}
                             </div>
-                            <div className="text-[10px] text-slate-500">{item.vietnamese}</div>
+                            <div className="text-[10px] text-amber-800/80 font-bold">{item.vietnamese}</div>
                           </div>
                         </div>
-                        <Volume2 className="w-3.5 h-3.5 text-sky-600 shrink-0" />
+                        <Volume2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                       </div>
                     ))}
                   </div>
@@ -601,13 +510,25 @@ export function App() {
                     onClick={() => {
                       sound.playClick();
                       setShowIslandMissionCard(false);
-                      sound.speakEnglish(`Let's start Island ${selectedIsland.islandNumber}!`);
+                      sound.speakEnglish(
+                        selectedIsland.isBossIsland
+                          ? `Let's conquer the Boss of Village ${selectedIsland.zoneIndex}!`
+                          : `Let's explore House ${selectedIsland.islandNumber}!`
+                      );
                       setActiveSection('arena');
                     }}
-                    className="flex-1 btn-toy-yellow text-slate-950 font-display font-extrabold py-3.5 rounded-2xl text-base flex items-center justify-center gap-2 cursor-pointer shadow-xl"
+                    className={`flex-1 font-display font-black py-3.5 rounded-2xl text-base flex items-center justify-center gap-2 cursor-pointer shadow-xl ${
+                      selectedIsland.isBossIsland
+                        ? 'btn-ghibli-amber text-amber-950'
+                        : 'btn-ghibli-leaf text-white'
+                    }`}
                   >
-                    <Play className="w-5 h-5 fill-slate-950" />
-                    <span>Bắt Đầu Bài Tập Đảo #{selectedIsland.islandNumber}!</span>
+                    <Play className="w-5 h-5 fill-current" />
+                    <span>
+                      {selectedIsland.isBossIsland
+                        ? `Chinh Phục Trùm Cuối Làng #${selectedIsland.zoneIndex}! 👑`
+                        : `Vào Học Ngôi Nhà #${selectedIsland.islandNumber}!`}
+                    </span>
                   </button>
                 </div>
               </div>
