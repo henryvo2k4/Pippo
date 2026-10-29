@@ -18,6 +18,7 @@ import {
 import { IslandLesson, IslandZoneMeta, KingdomInfo } from '../../data/curriculumData';
 import { sound } from '../../lib/sound';
 import { GhibliVillage1InteractiveMap } from './GhibliVillage1InteractiveMap';
+import { GhibliCharacterSprite } from './GhibliCharacterSprite';
 
 interface GhibliWorldMap2DProps {
   islands: IslandLesson[]; // 80 bài học của cấp độ hiện tại
@@ -382,14 +383,16 @@ export const GhibliWorldMap2D: React.FC<GhibliWorldMap2DProps> = ({
                   style={{ transform: `translateY(${translateY}px)` }}
                   className="relative z-10 flex flex-col items-center group"
                 >
-                  {/* Huy Hiệu Chỉ Dẫn: "Bé Đang Ở Đây!" */}
+                  {/* Nhân vật Bé Phù Thủy & Pet Meow theo chuẩn Sprite Forge */}
                   {isCurrent && (
-                    <div className="absolute -top-14 z-30 flex flex-col items-center animate-bounce">
-                      <div className="bg-amber-400 text-amber-950 font-display font-black text-xs px-3 py-1 rounded-full border-2 border-white shadow-2xl flex items-center gap-1">
-                        <span>🐱</span>
-                        <span>{nickname} đang ở đây!</span>
-                      </div>
-                      <div className="w-0 h-0 border-l-6 border-r-6 border-t-6 border-t-amber-400 border-l-transparent border-r-transparent" />
+                    <div className="absolute -top-26 z-30 flex flex-col items-center">
+                      <GhibliCharacterSprite
+                        nickname={nickname}
+                        size="sm"
+                        dialogueText={`${nickname} đang ở Làng ${zoneIdx}! ✨`}
+                        action="idle"
+                        onClick={() => sound.playSuccess()}
+                      />
                     </div>
                   )}
 

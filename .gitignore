@@ -35,3 +35,7 @@ Thumbs.db
 
 # TypeScript cache
 tsconfig.tsbuildinfo
+
+# Agent Sprite Forge source repository (local tooling)
+temp_sprite_forge/
+

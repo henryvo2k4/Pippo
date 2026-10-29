@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Crown, Star, Lock, CheckCircle2, Play, Volume2, Sparkles, X, ChevronRight } from 'lucide-react';
 import { IslandLesson } from '../../data/curriculumData';
 import { sound } from '../../lib/sound';
+import { GhibliCharacterSprite } from './GhibliCharacterSprite';
 
 interface Village1MapProps {
   lessons: IslandLesson[]; // 10 lessons of Village 1
@@ -332,14 +333,18 @@ export const GhibliVillage1InteractiveMap: React.FC<Village1MapProps> = ({
               style={{ left: `${coord.x}%`, top: `${coord.y}%` }}
               className="absolute -translate-x-1/2 -translate-y-1/2 z-25 group"
             >
-              {/* CHỈ DẪN BÉ ĐANG Ở ĐÂY */}
+              {/* NHÂN VẬT BÉ PHÙ THỦY & PET MEOW HOẠT ẢNH THEO CHUẨN SPRITE FORGE */}
               {isCurrent && (
-                <div className="absolute -top-14 left-1/2 -translate-x-1/2 z-35 flex flex-col items-center pointer-events-none animate-bounce">
-                  <div className="bg-amber-400 text-amber-950 font-display font-black text-[11px] px-3 py-0.5 rounded-full border-2 border-white shadow-xl whitespace-nowrap flex items-center gap-1">
-                    <span>🐱</span>
-                    <span>{nickname} đang học ở đây!</span>
-                  </div>
-                  <div className="w-0 h-0 border-l-4 border-r-4 border-t-5 border-t-amber-400 border-l-transparent border-r-transparent" />
+                <div className="absolute -top-28 left-1/2 -translate-x-1/2 z-35 flex flex-col items-center">
+                  <GhibliCharacterSprite
+                    nickname={nickname}
+                    size="sm"
+                    dialogueText={`${nickname} ở đây nè! ✨`}
+                    action="idle"
+                    onClick={() => {
+                      sound.playSuccess();
+                    }}
+                  />
                 </div>
               )}
 
